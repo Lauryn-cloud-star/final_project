@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+/* Set html and body to use full height */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  
+}
+/* Create a pseudo-element over the body */
+body::before {
+  content: "";
+  position: fixed; /* Fixed to viewport */
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('/static/images/f1.webp') no-repeat center center fixed;
+  background-size: cover;
+  filter: blur(5px); /* <-- Blur the image here */
+  z-index: -1; /* Ensure it's behind other content */
+}
+.logo {
+    width: 80px; /* You can adjust the size */
+    height: auto; /* Keep the aspect ratio */
+    object-fit: contain; /* Make sure it fits nicely */
+}
+/* Ensure the main content area grows to fill available space */
+.main-content {
+    min-height: calc(100vh); /* Adjust '50px' based on your footer height */
+    display: flex; /* Optional, if you need flexbox layout */
+    flex-direction: column; /* Optional */
+}
+.sidebar{
+    width: 250px;
+    height: 700px;
+    background-color: #1E2B32;
+    border-radius: 10px 10px;
+}
+
+.sidebar-fix {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+.content-container{
+  margin-left: 3px;
+  flex-wrap: 1;
+  padding: 30px;
+    
+}
+.issue-container{
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 250hv); /* Adjust '50px' based on your footer height */
+  padding: 30px;
+  overflow: hidden;
+    
+}
+
+
+/* .cardi{ */
+    
+    /* width: 150px; */
+    /* height: 600px; */
+    /* background-color: #1E2B32; */
+    /* border-radius: 10px 10px; */
+    /* width: 200px; */
+/* } */
+
+.header{
+  border-radius: 10px 10px 0px 0px;
+  /* padding: 2px; */
+  background-color: #2A3942;
+}
+.navbar{
+
+  border-radius: 20px 20px 10px 10px;
+  padding: 2px;
+}
+h3{
+  color: #FFFFFF;
+  font-family: 'Roboto', sans-serif;
+  margin-left: 1rem;
+}
+
+
+
+
+.h3{
+  color: #FFFFFF;
+  font-family: 'Roboto', sans-serif;
+  margin-left: 1rem;
+}
+
+
+
+.icon{
+  margin-right: 8px;
+}
+
+#glass-effect {
+  background: rgba(42, 41, 41, 0.63);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(4.7px);
+-webkit-backdrop-filter: blur(4.7px);
+border: 1px solid rgba(42, 41, 41, 1);
+  
+    margin: 15px; /* Outer spacing */
+}
+.tableglass-effect {
+  background: rgba(223, 216, 216, 0.63);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4.7px);
+  -webkit-backdrop-filter: blur(4.7px);
+  border: 1px solid rgba(219, 214, 214, 1);
+    margin: 15px; /* Outer spacing */
+    padding: 20px;
+}
+
+.body li{
+  transition: 1s all;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  padding: 15px;
+  /* margin-left: -40px; */
+  margin-top: 0px;
+  color: #f8eeee;
+  font-size: 20px;
+  font-weight: 500;
+  list-style: none;
+  display: block;
+  border-top-right-radius: 10px 10px;
+  border-bottom-right-radius: 10px 10px;
+}
+.body ul li{
+  font-weight: 600;
+  font-size: 18px;
+}
+
+li:hover{
+  transition: 1s all;
+  color: #2f89fc;
+  background-color: rgba(42, 45, 46, 0.82); 
+  border-top-right-radius: 10px 10px;
+  border-bottom-right-radius: 10px 10px;
+  cursor: pointer;
+}
+
+.body > li{
+  margin-left: 3px;
+  padding: 5px;
+  float: left;
+}
+
+.body li ul{
+  background: #1E2B32;
+  margin-left: 260px;
+  margin-top: -38px;
+  display: none;
+  position: absolute;
+  border-top-right-radius: 15px 15px;
+  border-bottom-right-radius: 15px 15px;
+}
+
+.body li:hover > ul{
+  display: block;
+  margin-left: 260px;
+  cursor: pointer;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+
+}
+
+.search-container {
+    position: relative; 
+    margin-right: 20px;
+    display: flex;
+    justify-content: flex-end; /* Aligns content to the right */
+    align-items: center; /* Aligns content vertically */
+    width: 100%; /* Ensures the container uses full width */
+}
+  
+
+.search-container input {
+    padding: 10px;
+    border: 1px solid #2f89fc;
+    border-radius: 5px;
+    color: #fff;
+    background: #2A3942;
+}
+
+.search-container .fa-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+}
+
+.user-settings {
+    display: flex;
+    align-items: center;
+}
+
+.user-settings .fa-bell {
+    font-size: 20px;
+    margin-right: 15px;
+    color: white;
+}
+
+.user-settings .profile-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #2f89fc;
+    margin-right: 15px;
+}
+
+footer {
+    position: relative; /* Change to fixed if you want it always visible */
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Keeping original styles */
+    text-align: center;
+    padding: 2em 0; /* Adjust padding as needed */
+}
+#nav-effect{
+  background: rgba(46, 44, 44, 0.78);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(8.8px);
+-webkit-backdrop-filter: blur(8.8px);
+border: 1px solid rgba(85, 82, 82, 1);
+
+}

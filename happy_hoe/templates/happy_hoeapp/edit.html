@@ -1,0 +1,63 @@
+{% extends 'happy_hoeapp/base2.html' %}
+
+    
+{% load static %}
+{% block title %}Edit Stock{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <br>
+    
+    <div class="row">
+        <div class="col-6 bg-light p-4 rounded shadow-sm">
+            <h2 class="mb-1">Edit Stock: {{ stock.product_name|capfirst }}</h2>
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                <div class="card p-4 shadow-sm">
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}:</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+        
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        
+        </div>
+        <div class="col-6">
+            <div class="mt-0 my-5 p-4 bg-light rounded shadow-sm">
+                <h4>Current Stock Details</h4>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Product:</strong> {{ stock.product_name }}</li>
+                    <li class="list-group-item"><strong>Category:</strong> {{ stock.Category_name }}</li>
+                    <li class="list-group-item"><strong>Total Quantity:</strong> {{ stock.total_quantity }}</li>
+                    <li class="list-group-item"><strong>Issued Quantity:</strong> {{ stock.issued_quantity }}</li>
+                    <li class="list-group-item"><strong>Received Quantity:</strong> {{ stock.received_quantity }}</li>
+                    <li class="list-group-item"><strong>Cost of Stock:</strong> {{ stock.cost_of_stock }}</li>
+                    <li class="list-group-item"><strong>Unit Cost:</strong> {{ stock.unit_cost }}</li>
+                    <li class="list-group-item"><strong>Unit Price:</strong> {{ stock.unit_price }}</li>
+                    <li class="list-group-item"><strong>Date of Stock:</strong> {{ stock.date_of_stock }}</li>
+                    <li class="list-group-item"><strong>Supplier:</strong> {{ stock.supplier_name }}</li>
+                    <li class="list-group-item"><strong>Type of Stock:</strong> {{ stock.type_of_stock }}</li>
+                    <li class="list-group-item"><strong>Entry Agent:</strong> {{ stock.entry_agent }}</li>
+                </ul>
+            </div>
+        </div>
+      </div>
+    
+    <hr class="my-5">
+
+    
+</div>
+{% endblock %}

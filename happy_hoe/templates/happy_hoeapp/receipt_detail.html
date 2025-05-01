@@ -1,0 +1,39 @@
+{% extends 'happy_hoeapp/base2.html' %}
+{% load static %}
+    {% block content %}
+        <div class="card">
+            <div class="card-header">
+                <h1 class="text-center">Receipt</h1>
+                <h1 class="lead">customer name: {{ receipt.customer_name }}</h1>
+            </div>
+            <div class="card-block">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <td<strong>Item name</strong>></td>
+                                <td class="text-x5-center">Item quantity</td>
+                                <td class="text-x5-right">Toatal Bill(UGX)</td>
+                                <td class="text-x5-right">Amount Paid(UGX)</td>
+                                <td class="text-x5-right">Total Change(UGX)</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            <tr>
+                                <td >{{ receipt.product_name }}</td>
+                                <td class="text-xs-right">{{ receipt.quantity }}</td>
+                                <td class="text-xs-right">{{ receipt.total_sale }}</td>
+                                <td class="text-xs-right">{{ receipt.amount_received }}</td>
+                                <td class="text-xs-right">{{ receipt.get_change }}</td>
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        
+            
+        </div>
+    {% endblock %}

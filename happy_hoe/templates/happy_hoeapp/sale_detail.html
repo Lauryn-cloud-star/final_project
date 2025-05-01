@@ -1,0 +1,46 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+{% endblock %}
+
+
+{% block title %} Stock Details{% endblock %}
+
+{% block content  %}
+    <div class="container2 container-fluid p-3 flex-grow-1">
+        <div class=" conatainer p-2 mt- 5 gap-4">
+                        
+            <a href="{% url 'edit_sale' sale.id %} ">
+                <input type="submit" value="Edit item" class="rounded-full py-2 px-4">
+            </a>
+        </div>
+        <div class="tableglass-effect">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="fs-5">
+                        <th scope="col ">Product Name</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Qunatity</th>
+                        <th scope="col">Unit Price</th>
+                        <th scope="col">Total cost</th>
+                        <th scope="col">Date</th>
+                    
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    <tr class="fw-bolder">
+                        <td class="text-center">{{ sale.product_name }}</td>
+                        <td>{{ sale.customer_name }}</td>
+                        <td>{{ sale.quantity }}</td>
+                        <td>{{ sale.unit_price }}</td>
+                        <td>{{ sale.total_sale }}</td>
+                        <td> {{ sale.date }} </td>
+                    
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

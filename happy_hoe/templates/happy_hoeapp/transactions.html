@@ -1,0 +1,44 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% block title %} Transactions {% endblock %}
+{% load static %}
+{% block content %}
+    <div class="tableglass-effect">
+        <strong><h1 class="text-center mb-4 fs-1">All Paid Sales</h1></strong>
+       <table class="table table-hover rounded-lg shadow-sm boarder-radius-2xl bg-white/10 backdrop-blur-md border border-white/30 font-semibold hover:bg-opacity-70 duration-300 shadow-lg ">
+            <thead>
+                <tr class="fs-5">
+                    <th scope="col ">Product Name</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Qunatity</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Total cost</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Details</th>
+                </tr>
+                
+                <!-- <tr scope="col">Sales agent</tr> -->
+            </thead>
+            <tbody class="ml-5 fs-6">
+                {% for sale in sales %}
+                <tr class="table-secondary ">
+                    <td class="text-center">{{ sale.product_name }}</td>
+                    <td>{{ sale.customer_name }}</td>
+                    <td>{{ sale.quantity }}</td>
+                    <td>{{ sale.unit_price }}</td>
+                    <td>{{ sale.total_sale }}</td>
+                    <td> {{ sale.date }} </td>
+                    
+                    <td>
+                        
+                        
+                        <a href="{% url 'sale_detail' sale.id %}" class="px-6 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/30 font-semibold hover:bg-opacity-70 duration-300 shadow-lg "><input type="submit" value="Check Out"></a>
+                    </td>
+                
+                </tr>
+                {% endfor %}
+            </tbody>
+       </table>
+
+    </div>
+
+{% endblock %}

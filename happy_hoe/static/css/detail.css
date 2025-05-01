@@ -1,0 +1,32 @@
+/* Set html and body to use full height */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+
+.glass-effect {
+    background: rgba(255, 255, 255, 0.5); /* Glass-like appearance */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    backdrop-filter: blur(10px); /* Blur effect for the background */
+    display: flex; /* Use flexbox for layout */
+    
+    align-items: center; /* Center children horizontally */
+    justify-content: center; /* Center children vertically */
+    height: 100%; /* Full height of the parent container */
+}
+/* Centering the table */
+.table {
+    width: 100%; /* Make the table width 100% of the glass-effect container */
+    margin: auto; /* Center the table */
+}
+
+
+
+
+
+
+
+
+

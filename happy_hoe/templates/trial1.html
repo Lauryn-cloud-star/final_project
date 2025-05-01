@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="Description" content="Enter your description here"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- <link rel="stylesheet" href="/kgl/happy_hoe/static/css/style.css"> -->
+<title>Title</title>
+</head>
+<style>
+    body {
+        background-image: url('https://example.com/your-background-image.jpg'); /* Replace with your background image link */
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(to bottom, #000, #555);
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .hexagon {
+        position: relative;
+        width: 200px;
+        height: 250px; /* Half of the width * sqrt(3) */
+        background-color: #838996;
+        margin: 10px 0; /* Half of the height to align */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+        font-family: Arial, sans-serif;
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        transition: transform 0.3s;
+    }
+
+    .hexagon:hover {
+        transform: scale(1.05);
+    }
+
+    .icon {
+        display: block;
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="hexagon">
+            <span class="icon">👤</span>
+            <h2>WELCOME</h2>
+        </div>
+        <div class="hexagon">
+            <span class="icon">🎯</span>
+            <h2>ABOUT</h2>
+        </div>
+        <div class="hexagon">
+            <span class="icon">⚙️</span>
+            <h2>SERVICES</h2>
+        </div>
+        <div class="hexagon">
+            <span class="icon">📄</span>
+            <h2>RESUME</h2>
+        </div>
+        <div class="hexagon">
+            <span class="icon">💼</span>
+            <h2>WORKS</h2>
+        </div>
+        
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+</body>
+</html>

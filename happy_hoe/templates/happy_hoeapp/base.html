@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="Description" content="Enter your description here"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<title>{% block title %} Home{% endblock %}</title>
+</head>
+<body >
+   
+    <!-- style="background-image: url(/static/images/f1.webp); background-position: center; background-size: cover; backdrop-filter: blur(10px);" -->
+    <div class="header fixed-top mt-0 mb-10"  id="nav-effect">
+        
+        <img src="{% static 'images/trans.png' %}" alt="Logo" class="logo" /> 
+        
+        <div class="search-container ">
+           
+            <input type="text" placeholder="Search...">
+            <i class="fas fa-search items-center justify-center"></i>
+        </div>
+        <div class="user-settings">
+            <i class="fas fa-bell"></i>
+            <img src="path_to_profile_image.jpg" alt="User Profile" class="profile-icon" />
+        </div>
+    </div>
+    <br><br>
+    <div class="container-fluid px-0 ">
+        <div class="row g-0 ml-0"> 
+            <div class="col-md-3 px-0 ">
+                 <!-- Sidebar -->
+                <div class="sidebar me-1 " id="glass-effect">
+                    
+                    <div class="header ">
+                        
+                        <strong><h3 class="text-blue-400">Happy Hoe App</h3></strong>
+                        <!-- <div class="border-b my-2"></div> -->
+                    </div>
+                    <div class="body">
+                        <nav class="navbar sticky-top ">
+                            <div class="container-fluid">
+                                <ul>
+                                    <a class="" href=""><li><i class="fas fa-home"></i> Dashboard</li></a>
+                                     
+                                    <a class="" href=""><li><i class="fas fa-search"></i> Search</li></a> 
+                                    <a href=""><li class="active"><i class="fas fa-chart-line"></i> Sales</li></a>
+                                    <a class="" href=""><li><i class="fas fa-receipt"></i> Receipts</li></a> 
+                                    <a class="" href=""><li><i class="fas fa-shopping-cart"></i> Stock</li></a> 
+                                    <a class="" href=""><li><i class="fas fa-cog"></i> Settings</li></a> 
+                                    <a class="" href=""><li><i class="fas fa-comments"></i> Messages</li></a> 
+                                    <div class="border-b my-1"></div>
+                                    <a class="" href=""><li><i class="fas fa-user-circle"></i> Account</li></a> 
+                                    <a class="" href=""><li><i class="fas fa-sign-out-alt"></i> Logout</li></a> 
+                                
+                                </ul>
+                            </div>
+
+                        </nav>
+
+                       
+                        
+                    </div>
+                </div>
+                   <!-- end of side bar -->
+            </div>
+           <div class="col-md-9">
+                <!-- Main Content -->
+                <div class="container2 container-fluid p-3 flex-grow-1">
+                    {% block content %}
+
+                    {% endblock %}
+                </div>
+           </div>
+        </div>
+    </div>
+    
+    <footer class="bg-black bg-opacity-70 text-center p-2 mt-2">
+        <div class="flex justify-center space-x-2 mb-2">
+            <a href="#" class="text-white hover:underline">Designed by Lauryn Hope</a>
+            <!-- <a href="#" class="text-white hover:underline">Terms of Service</a> -->
+            <p class="text-sm text-white">© 2025 Karibu Groceries. All rights reserved.</p>
+        </div>
+        
+    </footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+</body>
+</html>

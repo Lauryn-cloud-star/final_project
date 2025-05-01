@@ -1,0 +1,61 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% block title %} Index{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+        <!-- Main Content -->
+        <div class="tableglass-effect">
+            <!-- <h1>Welcome to {{ site_name }}</h1> -->
+            <!-- <p>This is a Django dynamic app</p> -->
+            {% if user.is_authenticated %}
+                <h1 class="text-2xl">Welcome, {{ user.username }}!</h1>
+            {% else %}
+                <p>Please log in</p>
+            {% endif %}
+            <p class="text-2xl ">Below is a table containig the current stock</p>
+            <ul>
+                {% for item in products %}
+                <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+    
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit Price</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in stocks %}
+                    <tr  class="table-secondary">
+                        <td scope="row">{{ forloop.counter }}</td>
+                        <td>{{ stock.Category_name }}</td>
+                        <td>{{ stock.product_name }}</td>
+                        <td>{{ stock.total_quantity }}</td>
+                        <td>{{ stock.unit_price }}</td>
+                        <td class="d-flex gap-2">
+                        
+                            <a href="{% url 'stock_detail' stock.id %}"><input type="submit" value="Checkout item" class="rounded-full py-2 px-4"></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="col mt-4 p-4">
+            <!-- <a href="/addstock/" class=" bg-gray-700 rounded-lg shadow p-3 text-white"  >Add New Stock</a> -->
+        </div>
+        <div class="bg-green-50 text-green-900 p-3 gy-3">Total amount of stock is:<b>{{ cost_of_stock }}</b> </div>
+    </div>
+</div>
+
+        
+{% endblock %}

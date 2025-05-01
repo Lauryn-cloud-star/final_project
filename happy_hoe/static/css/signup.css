@@ -1,0 +1,62 @@
+body {
+    background: linear-gradient(135deg, rgba(255, 126, 95, 1) 0%, rgba(255, 126, 95, 0.5) 100%);
+    padding-top: 50px;
+   
+}
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    
+  }
+  /* Create a pseudo-element over the body */
+body::before {
+    content: "";
+    position: fixed; /* Fixed to viewport */
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('/static/images/f1.webp') no-repeat center center fixed;
+    background-size: cover;
+    filter: blur(5px); /* <-- Blur the image here */
+    z-index: -1; /* Ensure it's behind other content */
+}
+
+        .card {
+            border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .card-title {
+            margin-bottom: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #2575fc;
+            border-color: #2575fc;
+        }
+        .btn-primary:hover {
+            background-color: #1d5bbf;
+            border-color: #1d5bbf;
+        }
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+        .form-text {
+            color: #dc3545;
+        }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        .form-control.is-valid {
+            border-color: #198754;
+        }
+        .form-control-feedback {
+            display: none;
+        }
+        .form-control-feedback.show {
+            display: block;
+        }

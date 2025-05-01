@@ -1,0 +1,45 @@
+{% extends 'happy_hoeapp/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-center">
+        <div class="col-md-8 my-5  ">
+            <div class="mt-0  p-4 bg-light rounded shadow-sm tableglass-effect">
+                <h2 class="mb-2 fw-bold">Edit Sale - {{ sale.customer_name }}</h2>
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    <div class="cardd p-4 shadow-sm bg-gray-200">
+                        {% if form.non_field_errors %}
+                            <div class="text-danger mb-3">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        {% for field in form.hidden_fields %}
+                            {{ field }}
+                        {% endfor %}
+                        {% for field in form %}
+                            <div class="mb-3 fw-bolder">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}:</label>
+                                {{ field }}
+                                {% for error in field.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'sales' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    
+    
+
+        
+       
+    </div>
+</div>
+{% endblock %}

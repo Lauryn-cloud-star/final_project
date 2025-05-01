@@ -1,0 +1,64 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('your-background-image.jpg'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.2); /* White with transparency */
+    backdrop-filter: blur(10px); /* Glass effect */
+    padding: 20px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.navbar h1 {
+    color: white;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+}
+
+.navbar ul li {
+    margin-left: 20px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s;
+}
+
+.navbar ul li a:hover {
+    color: #ffcc00; /* Change color on hover */
+}
+
+.content {
+    background: rgba(255, 255, 255, 0.3); /* White with transparency */
+    backdrop-filter: blur(10px); /* Glass effect */
+    padding: 40px;
+    border-radius: 10px;
+    margin-top: 80px; /* Space for the navbar */
+    text-align: center;
+    color: white;
+}

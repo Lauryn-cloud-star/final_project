@@ -1,0 +1,16 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+    {% block content %}
+        <br>
+            <div class="container mt-5">
+                <h1 class="text-center">Add Stock</h1>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-secondary">Add Stock</button>
+                </form>
+            </div>
+    {% endblock %}
+
