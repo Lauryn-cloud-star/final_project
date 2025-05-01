@@ -56,10 +56,7 @@ def all_sales(request):
     return render(request,"happy_hoeapp/all_sales.html")
 
 #  view for the receipt
-def receipt(request):
-    # getting all the registered sales from our data base
-    sales=Sale.objects.all().order_by('-id')
-    return render(request,"happy_hoeapp/receipt.html", {"sales": sales})
+
 def sales(request):
     # getting all the registered sales from our data base
     sales=Sale.objects.all().order_by('-id')
@@ -70,42 +67,39 @@ def stock_detail(request, stock_id):
     stock = Stock.objects.get(id=stock_id)
 
     return render(request, 'happy_hoeapp/detail.html', {'stock': stock})
-def issue_item(request, pk):
-    issued_item = Stock.objects.get(id=pk)
-
+def issue_item(request,pk):
+    # creating a variable issued item and acces all entries in the stock model by their models 
+    issued_item=Stock.objects.get(id=pk)
+    # acccessing our form from forms.py
+    sales_form = AddSaleForm(request.POST)
     if request.method == 'POST':
-        sales_form = AddSaleForm(request.POST)
         if sales_form.is_valid():
-            new_sale = sales_form.save(commit=False)
-            new_sale.product_name = issued_item
-            new_sale.payment_method = sales_form.cleaned_data['payment_method']
+            new_sale = sales_form.save(commit = False)
+            # the new_sale.(...) if followed by the propeerty that represents the sale
+            new_sale.product_name = issued_item 
             new_sale.unit_price = issued_item.unit_price
-            new_sale.sales_agent = request.user  # if you're tracking sales agent
-            new_sale.amount_receiced = sales_form.cleaned_data['amount_received']
-            # Optional: auto-fill some fields
-            if not new_sale.customer_name:
-                new_sale.customer_name = "Anonymous"
-            if not new_sale.payment_method:
-                new_sale.payment_method = "Cash"
-            
-
-            issued_quantity = new_sale.quantity
-            if issued_quantity > issued_item.total_quantity:
-                sales_form.add_error('quantity', 'Not enough stock available.')
-            else:
-                new_sale.save()
-                issued_item.total_quantity -= issued_quantity
-                issued_item.save()
-                return redirect('receipt')
-    else:
-        sales_form = AddSaleForm()
-
+            new_sale.save()
+            # to keep track of the stock remaining after sale
+            issued_quantity = int(request.POST['quantity'])
+            issued_item.total_quantity -= issued_quantity
+            issued_item.save()
+            print(issued_item.product_name)
+            print(request.POST['quantity'])
+            print(issued_item.total_quantity)
+            return redirect ('sales')
     return render(request, 'happy_hoeapp/issue_item.html', {
         'sales_form': sales_form,
         'issued_item': issued_item
     })
 
+def receipt_detail(request, receipt_id):
+    receipt = Sale.objects.get(id=receipt_id)
+    return render(request, 'happy_hoeapp/final_receipt.html', {'receipt': receipt})
 
+def receipt(request):
+    # getting all the registered sales from our data base
+    sales=Sale.objects.all().order_by('-id')
+    return render(request,"happy_hoeapp/receipt.html", {"sales": sales})
 #  view for the login page
 def Login(request):
     if request.method == 'POST':
@@ -223,6 +217,3 @@ def sales(request):
     sales=Sale.objects.all().order_by('-id')
     return render(request,"happy_hoeapp/transactions.html", {"sales": sales})
 
-def receipt_detail(request, receipt_id):
-    receipt = Sale.objects.get(id=receipt_id)
-    return render(request, 'happy_hoeapp/final_receipt.html', {'receipt': receipt})

@@ -33,6 +33,11 @@
                         
                         <a href="{% url 'sale_detail' sale.id %}" class="px-6 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/30 font-semibold hover:bg-opacity-70 duration-300 shadow-lg "><input type="submit" value="Check Out"></a>
                     </td>
+                    <td>
+                        <a href="{% url 'receipt_detail' sale.id %}" class="text-blue-500 hover:underline">
+                            <input type="button" value="Final receipt" class="bg-blue-500 text-white rounded">
+                        </a>
+                    </td>
                 
                 </tr>
                 {% endfor %}

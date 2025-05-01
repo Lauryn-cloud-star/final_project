@@ -1,0 +1,131 @@
+.main{
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: calc(100% - 260px);
+    left: 240px;
+    min-height: calc(100vh - 60px);
+    background: #dedbdb;
+}
+.cards{
+    width: 100%;
+    padding: 35px 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap:20px
+    
+
+}
+.cards .card{
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-radius: 10px;
+    box-sizing: 0 7px 25px 0 rgba(0, 0, 0, 0.08);
+
+}
+.cards .card:hover{
+    background: #2f8436;
+}
+.cards .card:hover .number{
+    color: #fff;
+}
+.cards .card:hover .card-name{
+    color: #fff;
+}
+.cards .card:hover .icon-box i {
+    color: #fff;
+}
+
+.number{
+    font-size: 35px;
+    font-weight: 500;
+    color: #299863;
+}
+.card-name{
+    color: #8888;
+    font-weight: 600; 
+}
+.icon-box i{
+    font-size: 45px;
+    color: hsl(151, 58%, 38%);
+}
+.text-box {
+    font-size: large;
+    padding: 10px; /* Add some padding to the boxes */
+    border: 1px solid #ccc; /* Add a border for visibility */
+    margin-bottom: 10px; /* Add spacing between boxes */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); /* Adjusted shadow */
+    background-color: white; /* Ensure boxes have a background color */
+  }
+  .branches{
+    font-weight: 400;
+   
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 20px;
+    padding: 20px;
+    padding-top: 0;
+}
+
+@media (max-width:1115px) {
+    .sidebar{
+        width: 60px;
+    }
+    .main{
+        left: 60px;
+        width: calc(100% - 60px);
+    }
+}
+@media (max-width:1115px) {
+    .cards{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .cards{
+        width: 100%;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 20px;
+        padding-top: 0;
+    }
+}
+.sidebar{
+    position: fixed;
+    top: 60px;
+    width: 230px;
+    height: calc(100% - 60px);
+    background: #299863;
+    overflow-x: hidden;
+
+}
+.sidebar ul {
+    margin-top:20px
+}
+.sidebar ul li {
+    width: 100%;
+    list-style: none;
+
+}
+.sidebar ul li:hover {
+    background: #e8ecea;
+}
+.sidebar ul li:hover a {
+    color: #237b2b;
+}
+.sidebar ul li a {
+    width: 100%;
+    text-decoration: none;
+    color: #fff;
+    height: 60px;
+    display: flex;
+    align-items: center;
+
+}
+.sidebar ul li a i {
+    min-width: 60px;
+    font-size: 24px;
+    text-align: center;
+}

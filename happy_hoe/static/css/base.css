@@ -31,11 +31,12 @@ body::before {
     display: flex; /* Optional, if you need flexbox layout */
     flex-direction: column; /* Optional */
 }
-.sidebar{
-    width: 250px;
-    height: 700px;
-    background-color: #1E2B32;
-    border-radius: 10px 10px;
+.sidebar {
+  width: 180px; /* Reduced width */
+  height: 700px;
+  background-color: #1E2B32;
+  border-radius: 10px;
+  margin-left: 0; /* Remove margin on the left */
 }
 
 .sidebar-fix {
@@ -106,7 +107,7 @@ backdrop-filter: blur(4.7px);
 -webkit-backdrop-filter: blur(4.7px);
 border: 1px solid rgba(42, 41, 41, 1);
   
-    margin: 15px; /* Outer spacing */
+    /* margin: 15px; Outer spacing */
 }
 .tableglass-effect {
   background: rgba(223, 216, 216, 0.63);

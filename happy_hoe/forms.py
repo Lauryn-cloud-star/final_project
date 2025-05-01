@@ -14,7 +14,7 @@ class AddSaleForm (ModelForm):
     class Meta:
         model = Sale
         # fields = ["product_name", "quantity", "cost_of_stock", "unit_cost", "unit_cost", "unit_price", "date_of_stock"]
-        fields = ['quantity', 'customer_name', 'payment_method', 'amount_received', 'product_name']
+        fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         super(AddSaleForm, self).__init__(*args, **kwargs)

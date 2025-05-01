@@ -1,78 +1,24 @@
 {% extends 'happy_hoeapp/base.html' %}
-{% block title %} Landing Page{% endblock %}
+{% block title %} Index{% endblock %}
 
 {% load static %}
 {% load crispy_forms_tags %}
 
-
-
-
-
 {% block content %}
-<div class="container mt-2">
-    <div class="row mt-4">
-        <!-- Left Column: Sale Form -->
-        <div class="col-md-6  shadow-sm">
-            <div class="cardd p-4 shadow-sm bg-light rounded-xl " style="width: 500px;">
-                <h3 class="text-dark fw-bold fs-5">Sell Item</h3>
-                <form method="POST" validate>
-                    {% csrf_token %}
-                
-                    <!-- Read-only but included in POST -->
-                    <input type="hidden" name="product_name" value="{{ issued_item.product_name }}">
-                    <input type="hidden" name="unit_price" value="{{ issued_item.unit_price }}">
-                
-                    <div class="mb-3">
-                        <label class="form-label">Customer Name</label>
-                        <input type="text" class="form-control" value="{{ issued_item.customer_name }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Product Name</label>
-                        <input type="text" class="form-control" value="{{ issued_item.product_name }}" readonly>
-                    </div>
-                
-                    <div class="mb-3">
-                        <label class="form-label">Unit Price</label>
-                        <input type="text" class="form-control" value="{{ issued_item.unit_price }}" readonly>
-                    </div>
-                
-                    <div class="mb-3">
-                        <label class="form-label">Available Quantity</label>
-                        <input type="text" class="form-control" value="{{ issued_item.total_quantity }}" readonly>
-                    </div>
-                
-                    <!-- Editable field from form -->
-                    <div class="mb-3">
-                        <label for="{{ sales_form.quantity.id_for_label }}" class="form-label">Quantity to Sell</label>
-                        {{ sales_form.quantity }}
-                        {% for error in sales_form.quantity.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                
-                    
-                    <input type="submit" value="Sell item" class="rounded-full py-2 px-4 btn btn-primary">
-                </form>
-                
-            </div>
-        </div>
-
-        <!-- Right Column: Item Summary -->
-        <div class="col-md-6">
-            <div class="cardd p-4 shadow-sm bg-light rounded-xl" style="height: 439px;">
-                <h4>Item Details</h4>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Product:</strong> {{ issued_item.product_name }}</li>
-                    <li class="list-group-item"><strong>Unit Price:</strong> {{ issued_item.unit_price }}</li>
-                    <li class="list-group-item"><strong>Available Quantity:</strong> {{ issued_item.total_quantity }}</li>
-                    <li class="list-group-item"><strong>Category:</strong> {{ issued_item.category_name }}</li>
-                    <!-- Add more fields if needed -->
-                </ul>
-            </div>
+    <style>
+        
+    </style>
+    <div class="issue-container">
+        <div class="tableglass-effect">
+            <h1 class="fw-bold fs-2">Sales</h1>
+            <form action="" method ='POST'>
+       
+                {% csrf_token %}
+                {{ sales_form|crispy }}
+                <input type="submit" value="Sell item" class="rounded-full py-2 px-4">
+            </form>
         </div>
     </div>
-</div>
-{% endblock %}
-
-
+   
     
+{% endblock %}

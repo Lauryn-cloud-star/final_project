@@ -29,33 +29,34 @@
             <img src="path_to_profile_image.jpg" alt="User Profile" class="profile-icon" />
         </div>
     </div>
-    <br><br>
+    
     <div class="container-fluid px-0 ">
         <div class="row g-0 ml-0"> 
-            <div class="col-md-3 px-0 ">
+            <div class="col-md-2 w-[150px] px-0 ">
+                <br><br><br>
                  <!-- Sidebar -->
-                <div class="sidebar me-1 " id="glass-effect">
-                    
+                <div class="sidebar w " id="glass-effect">
+                   
                     <div class="header ">
                         
                         <strong><h3 class="text-blue-400">Happy Hoe App</h3></strong>
                         <!-- <div class="border-b my-2"></div> -->
                     </div>
                     <div class="body">
-                        <nav class="navbar sticky-top ">
+                        <nav class="navbar ">
                             <div class="container-fluid">
                                 <ul>
-                                    <a class="" href=""><li><i class="fas fa-home"></i> Dashboard</li></a>
+                                    <a class="" href="home"><li><i class="fas fa-home"></i> Dashboard</li></a>
                                      
                                     <a class="" href=""><li><i class="fas fa-search"></i> Search</li></a> 
-                                    <a href=""><li class="active"><i class="fas fa-chart-line"></i> Sales</li></a>
+                                    <a href="sales"><li class="active"><i class="fas fa-chart-line"></i> Sales</li></a>
                                     <a class="" href=""><li><i class="fas fa-receipt"></i> Receipts</li></a> 
-                                    <a class="" href=""><li><i class="fas fa-shopping-cart"></i> Stock</li></a> 
-                                    <a class="" href=""><li><i class="fas fa-cog"></i> Settings</li></a> 
+                                    <a class="" href="home"><li><i class="fas fa-shopping-cart"></i> Stock</li></a> 
+                                
                                     <a class="" href=""><li><i class="fas fa-comments"></i> Messages</li></a> 
                                     <div class="border-b my-1"></div>
                                     <a class="" href=""><li><i class="fas fa-user-circle"></i> Account</li></a> 
-                                    <a class="" href=""><li><i class="fas fa-sign-out-alt"></i> Logout</li></a> 
+                                    <a class="/" href=""><li><i class="fas fa-sign-out-alt"></i> Logout</li></a> 
                                 
                                 </ul>
                             </div>
@@ -68,7 +69,8 @@
                 </div>
                    <!-- end of side bar -->
             </div>
-           <div class="col-md-9">
+           <div class="col-md-10">
+            <br><br><br>
                 <!-- Main Content -->
                 <div class="container2 container-fluid p-3 flex-grow-1">
                     {% block content %}

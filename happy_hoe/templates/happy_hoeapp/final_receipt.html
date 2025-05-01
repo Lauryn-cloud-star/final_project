@@ -11,13 +11,13 @@
 <link rel="stylesheet" href="/static/css/style.css">
   {% block title %}<title>Receipt</title>{% endblock %}
 </head>
-<body style="background-image: url(https://images.unsplash.com/photo-1629812456605-4a044aa38fbc?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTc3ODI1OTg&ixlib=rb-1.2.1&q=80); background-position: center; background-size: cover;">
+<body style="background-image: url('/static/images/f1.webp'); background-position: center; background-size: cover;">
     <nav>
         <a href="#">LauraFoods</a>
         <ul class="list">
           <li><a href="/home/">Home</a></li>
           <li><a href="/all_stock/">Stock</a></li>
-          <li><a href="/all_sales/">Sales</a></li>
+          <li><a href="/sales/">Sales</a></li>
           <li><a href="#">Users</a></li>
         </ul>
         <button class="search">Search</button>
@@ -27,11 +27,11 @@
     <div class="receipt-container">
         {% block content %}
         
-                <div class="flex flex-col bg-light p-10 my-5 rounded-lg" id="receipt">
+                <div class="flex flex-col bg-light p-5 my-5 rounded-lg" id="receipt">
                     <h1 class="text-2xl font-bold text-gray-800 text-center">Receipt</h1>
                     <p class="text-sm text-gray-600 text-center">Thank you for your purchase!</p>
                     <div class="flex flex-col items-center gap-2">
-                        <h3 class="font-semibold">Laura Foods</h3>
+                        <h3 class="font-semibold">Karibu Groceries</h3>
                         <p class="text-xs">Maganjjo</p>
                     </div>
                     <div class="flex flex-col gap-3 border-b py-4 text-xs">
