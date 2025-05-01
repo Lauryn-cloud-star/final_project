@@ -4,6 +4,36 @@
 {% load static %}
 
 {% block content %}
+<style>
+    
+    .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge.danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .badge.warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .badge.info {
+            background-color: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+        }
+        
+        .badge.premium {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+</style>
 
         <!-- Main Content -->
         <div class="tableglass-effect">
@@ -29,6 +59,7 @@
                         <th scope="col">Product Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit Price</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -40,10 +71,21 @@
                         <td>{{ stock.product_name }}</td>
                         <td>{{ stock.total_quantity }}</td>
                         <td>{{ stock.unit_price }}</td>
+                        <td>
+                            {% if stock.total_quantity <= 300 %}
+                            <span class="badge danger"> Out of Stock</span>
+                            {% elif stock.total_quantity < 700 %}
+                            <span class="badge warning">Soon out of stock</span>
+                      
+                        {% else %}
+                            <span class="badge premium">Well Stocked</span>
+                        {% endif %}
+                        </td>
                         <td class="d-flex gap-2">
                         
                             <a href="{% url 'stock_detail' stock.id %}"><input type="submit" value="Checkout item" class="rounded-full py-2 px-4"></a>
                         </td>
+
                     </tr>
                     {% endfor %}
                     

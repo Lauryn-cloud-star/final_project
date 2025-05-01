@@ -26,7 +26,7 @@ urlpatterns = [
     # view for the index page
     path('', views.Login, name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='happy_hoeapp/logout.html'), name="logout"),
-    path('home', views.index, name='index'),
+    path('home/', views.index, name='index'),
     path('add_stock/<str:pk>/', views.add_stock, name="add_stock"),
     path('all_stock/', views.all_stock, name="all_stock"),
     path('add_sale', views.add_sale, name="add_sale"),

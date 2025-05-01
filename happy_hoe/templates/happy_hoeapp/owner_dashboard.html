@@ -1,0 +1,470 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Hoe App - Owner Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #A86523;
+            --secondary: #C1BAA1;
+            --warning: #D7D3BF;
+            --info: #D7D3BF;
+            --danger: #ECEBDE;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            /* color: #333; */
+            margin: 0;
+        }
+        
+        
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stats-card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stats-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .stats-card h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .stats-card.sales { background: var(--primary); }
+        .stats-card.stock { background: var(--secondary); }
+        .stats-card.credit { background: var(--warning); color: #333; }
+        .stats-card.users { background: var(--info); }
+        
+        .categories {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-width: 80px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+        
+        .category-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .alerts {
+            margin-bottom: 25px;
+            flex: 1;
+        }
+        
+        .low-stock-alert {
+            background: rgba(223, 216, 216, 0.63);
+            border-left: 4px solid var(--danger);
+            color: black;
+            font-weight: 500;
+            padding: 15px;
+            border-radius: 4px;
+            height: 100%;
+        }
+        
+        .low-stock-alert h4 {
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .low-stock-alert h4 span {
+            margin-right: 8px;
+        }
+        
+        .charts-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .chart-card h4 {
+            margin-top: 0;
+            color: #333;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        .products-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .products-section h4 {
+            margin-top: 0;
+            color: #333;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .view-all {
+            font-size: 14px;
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge.danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .badge.warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .badge.info {
+            background-color: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+        }
+        
+        .badge.premium {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        @media (max-width: 992px) {
+            .charts-row {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Owner Dashboard</h1>
+            
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-cards">
+            <div class="stats-card sales">
+                <h3>Total Sales</h3>
+                <h2>{{ sales.total_sales }}</h2>
+            </div>
+            <div class="stats-card stock">
+                <h3>Total Stock</h3>
+                <h2>{{ stock.total_stock }}</h2>
+            </div>
+            <div class="stats-card credit">
+                <h3>Credit Sales</h3>
+                <h2>{{ total_credit_sales }}</h2>
+            </div>
+            <div class="stats-card users">
+                <h3>Total Users</h3>
+                <h2>{{ total_users }}</h2>
+            </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="categories">
+            <div class="category-item">
+                <div class="category-icon">🌾</div>
+                <span>Beans</span>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">🌽</div>
+                <span>Maize</span>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">🥜</div>
+                <span>G'nuts</span>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">🌱</div>
+                <span>Soybeans</span>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">🌿</div>
+                <span>Cowpeas</span>
+            </div>
+        </div>
+        
+        <!-- Charts Row with Sales Chart and Low Stock Alerts -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h4>Current Stock Levels</h4>
+                <div class="chart-container">
+                    <canvas id="stockChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h4>Sales Distribution</h4>
+                <div class="chart-container">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="alerts">
+            <div class="low-stock-alert">
+                <h4><span>⚠️</span> Low Stock Alerts</h4>
+                <ul>
+                    <li>Cowpeas (5 units remaining)</li>
+                    <li>G'nuts (8 units remaining)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Products Table -->
+        <div class="products-section">
+            <h4>
+                All Products
+                <a href="/home/" class="view-all">View All</a>
+            </h4>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in stocks %}
+                        <tr>
+                            <td>{{ stock.product_name }}</td>
+                            <td>{{ stock.Category_name }}</td>
+                            <td>{{ stock.total_quantity }}</td>
+                            <td>UGX {{ stock.unit_price }}</td>
+                            <td>
+                                {% if stock.total_quantity <= 300 %}
+                                    <span class="badge danger"> Out of Stock</span>
+                                    {% elif stock.total_quantity < 700 %}
+                                    <span class="badge warning">Soon out of stock</span>
+                              
+                                {% else %}
+                                    <span class="badge premium">Well Stocked</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Parse the Django template variables
+        const stockData = JSON.parse('{{ stock_data_json|escapejs }}');
+        const salesData = JSON.parse('{{ sales_data_json|escapejs }}');
+
+        // Stock Levels Bar Chart
+        const stockCtx = document.getElementById('stockChart').getContext('2d');
+        new Chart(stockCtx, {
+            type: 'bar',
+            data: {
+                labels: stockData.map(item => item.product_name.charAt(0).toUpperCase() + item.product_name.slice(1)),
+                datasets: [{
+                    label: 'Current Stock',
+                    data: stockData.map(item => item.quantity),
+                    backgroundColor: [
+                        '#28a745',  // Green for beans
+                        '#007bff',  // Blue for maize
+                        '#ffc107',  // Yellow for soybeans
+                        '#17a2b8',  // Cyan for gnuts
+                        '#dc3545'   // Red for cowpeas
+                    ],
+                    borderColor: 'rgba(255, 255, 255, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantity'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Products'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Sales Distribution Pie Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: salesData.map(item => item.product_name.charAt(0).toUpperCase() + item.product_name.slice(1)),
+                datasets: [{
+                    data: salesData.map(item => item.total_sales),
+                    backgroundColor: [
+                        '#28a745',  // Green for beans
+                        '#007bff',  // Blue for maize
+                        '#ffc107',  // Yellow for soybeans
+                        '#17a2b8',  // Cyan for gnuts
+                        '#dc3545'   // Red for cowpeas
+                    ],
+                    borderColor: 'rgba(255, 255, 255, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sales by Product'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

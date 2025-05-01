@@ -128,7 +128,66 @@ def Login(request):
 
 #view for the owner dashboard
 def owner(request):
-    return render(request, 'happy_hoeapp/owner_dashboard.html')
+    from django.db.models import Sum, F, FloatField
+    from django.db.models.functions import Coalesce
+    import json
+    from django.core.serializers.json import DjangoJSONEncoder
+
+    # Get totals for dashboard cards
+
+    total_sales = Sale.objects.count()
+    total_stock = Stock.objects.aggregate(total=Sum('total_quantity'))['total'] 
+    total_credit_sales = CreditSale.objects.count()
+    total_users = Userprofile.objects.count()
+    
+    # Get low stock alerts (items with quantity less than 10)
+    low_stock_items = Stock.objects.filter(total_quantity__lt=10)
+    
+    # Get stock data for bar graph - aggregate by product name
+    stock_data = []
+    for choice in Stock.product_choices:
+        product_name = choice[0]  # Get the value from the choice tuple
+        quantity = Stock.objects.filter(product_name=product_name).aggregate(
+            total=Coalesce(Sum('total_quantity'), 0)
+        )['total']
+        stock_data.append({
+            'product_name': product_name,
+            'quantity': quantity
+        })
+    
+    # Get sales data for pie chart - aggregate total sales value by product
+    sales_data = []
+    for choice in Stock.product_choices:
+        product_name = choice[0]
+        total_sales_value = Sale.objects.filter(product_name__product_name=product_name).aggregate(
+            total=Coalesce(Sum(F('quantity') * F('unit_price'), output_field=FloatField()), 0.0)
+        )['total']
+        sales_data.append({
+            'product_name': product_name,
+            'total_sales': float(total_sales_value)
+        })
+    
+    # Get all products for the table
+
+    stocks = Stock.objects.all().order_by('-id')
+    
+    context = {
+        'total_sales': total_sales,
+        'total_stock': total_stock,
+        'total_credit_sales': total_credit_sales,
+        'total_users': total_users,
+        'low_stock_items': low_stock_items,
+        'stock_data_json': json.dumps(stock_data, cls=DjangoJSONEncoder),
+        'sales_data_json': json.dumps(sales_data, cls=DjangoJSONEncoder),
+        'stocks': stocks,
+
+        
+    }
+
+    
+
+    return render(request, 'happy_hoeapp/owner_dashboard.html', context, )
+
 #view for the managers dashboard
 def manager(request):
     return render(request, 'happy_hoeapp/manager_dashboard.html')
