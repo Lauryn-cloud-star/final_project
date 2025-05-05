@@ -1,0 +1,111 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
+
+{% block title %}Users Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <h2 class="card-text">{{ total_users }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Managers</h5>
+                    <h2 class="card-text">{{ total_managers }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Sales Agents</h5>
+                    <h2 class="card-text">{{ total_salesagents }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4>Users List</h4>
+            {% if user.is_owner %}
+            <a href="{% url 'signup' %}" class="btn btn-primary">Add New User</a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Branch</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Date Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.get_full_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.branch.branch_name }}</td>
+                            <td>
+                                {% if user.is_manager %}
+                                    <span class="badge bg-success">Manager</span>
+                                {% elif user.is_salesagent %}
+                                    <span class="badge bg-info">Sales Agent</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Staff</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                            <td>
+                                {% if user.is_owner %}
+                                <div class="btn-group">
+                                    <a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    {% if not user.is_owner %}
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" >
+                                        <a href="{% url 'delete_user' user.id %  }"><i class="fas fa-trash"></i></a>  
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">No users found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

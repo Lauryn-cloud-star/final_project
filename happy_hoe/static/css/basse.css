@@ -1,0 +1,38 @@
+body {
+    background: url('{% static "images/s2.webp" %}') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Dark overlay with 60% opacity */
+    z-index: 1;
+}
+.container {
+    position: relative;
+    z-index: 2; /* Place container above the overlay */
+}
+.login-card {
+    background: rgba(253, 249, 249, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(236, 230, 230, 0.1);
+    overflow: hidden;
+    width: 900px;
+}
+
+.login-form-section {
+    padding: 40px;
+    color: #c8c7c7;
+}

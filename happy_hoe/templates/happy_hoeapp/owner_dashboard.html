@@ -1,5 +1,6 @@
 {% extends 'happy_hoeapp/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 <!DOCTYPE html>
@@ -10,13 +11,12 @@
     <title>Happy Hoe App - Owner Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary: #A86523;
-            --secondary: #C1BAA1;
-            --warning: #D7D3BF;
-            --info: #D7D3BF;
-            --danger: #ECEBDE;
-        }
+       :root {
+    --primary: #4F46E5;    /* Deep indigo for sales */
+    --secondary: #3B82F6;  /* Blue for stock */
+    --warning: #F59E0B;    /* Amber for credit sales */
+    --info: #10B981;       /* Emerald for users */
+}
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -266,19 +266,22 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Owner Dashboard</h1>
-            
+            {% if user.is_authenticated %}
+                <h1 class="text-2xl">Welcome, {{ user.username }}!</h1>
+            {% else %}
+            <p>Please login</p>
+            {% endif %}
         </div>
         
         <!-- Stats Cards -->
         <div class="stats-cards">
             <div class="stats-card sales">
                 <h3>Total Sales</h3>
-                <h2>{{ sales.total_sales }}</h2>
+                <h2>{{ total_sales }}</h2>
             </div>
             <div class="stats-card stock">
                 <h3>Total Stock</h3>
-                <h2>{{ stock.total_stock }}</h2>
+                <h2>Kgs:{{ total_stock }}</h2>
             </div>
             <div class="stats-card credit">
                 <h3>Credit Sales</h3>
@@ -334,8 +337,8 @@
             <div class="low-stock-alert">
                 <h4><span>⚠️</span> Low Stock Alerts</h4>
                 <ul>
-                    <li>Cowpeas (5 units remaining)</li>
-                    <li>G'nuts (8 units remaining)</li>
+                    <li>Bean (300 kgs remaining)</li>
+                    <li>Cowpeas (300 kgs remaining)</li>
                 </ul>
             </div>
         </div>

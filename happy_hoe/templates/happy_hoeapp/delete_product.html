@@ -1,0 +1,21 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+    <div class="main-content">
+        <div class="container">
+            <h3>Delete Product</h3>
+            <hr>
+            <form method="POST">
+                <div class="alert alert-danger">
+                    <h4>Are you sure you want to delete "{{ product_name }}"?</h4>
+                </div>
+                {% csrf_token %}
+                {{ form|crispy }}
+                <a class="btn btn-secondary btn-sm" href="{% url 'index' %}">Cancel</a>
+                <input class="btn btn-danger btn-sm" type="submit" value="Confirm">
+            </form>
+        </div>
+    </div>
+{% endblock %}

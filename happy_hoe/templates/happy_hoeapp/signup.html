@@ -1,19 +1,42 @@
-{% load static %}
+{% extends 'happy_hoeapp/base2.html' %}
 {% load crispy_forms_tags %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="Description" content="Enter your description here"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="static/css/signup.css">
-<title>Title</title>
-</head>
-<body class="bg-grey-900">
+{% load static %}
+
+{% block title %}Edit Stock{% endblock %}
+{% block extra_css %}
+<style>
+     
+     .form-label {
+        color: white !important;
+    }
+    .form-text {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    .card {
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.3) !important;
+    }
+    .mb-3{
+        color: white;
+    }
+    
+</style>
+{% endblock %}
+{% block content %}
+
     <div class="container mt-5 mb-5 ">
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-12 col-sm-12">
@@ -21,19 +44,19 @@
                     <div class="card-body">
                         {% if request.user.is_authenticated %}
                         <div class="flex items-center space-x-4 px-6">
-                            <a href=""  class="text-white hover:text-blue-400"><input type="button">Logout</a>
+                            <a href="/owner_dashboard/"  class="text-white hover:text-blue-400"><input type="button">Back</a>
                             {% else %}
-                            <a href="" class="text-white hover:text-blue-400"><input type="button">Login</a>
+                            <a href="/login/" class="text-white hover:text-blue-400"><input type="button">Login</a>
                             {% endif %}
                         </div>
-                        {% block content %}
+                    
                         <form action="" method="POST" id="registrationform">
-                            <h1 class="text-center">REGISTER</h1>
+                            <h1 class="text-center text-white">REGISTER</h1>
                             {% csrf_token %}
                             {{ form | crispy }}
                             <input type="submit" value="register" class="btn btn-primary">
                         </form>
-                        {% endblock %}
+                
                     </div>
                 </div>
             </div>
@@ -43,10 +66,6 @@
 
     </div>
 
-    
+{% endblock %}    
     
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
-</body>
-</html>

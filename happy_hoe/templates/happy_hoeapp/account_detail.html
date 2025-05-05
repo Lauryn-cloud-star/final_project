@@ -1,0 +1,104 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
+
+{% block title %}Account Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Profile Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg" id="glass-effect">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="Profile" class="rounded-circle" width="150">
+                        {% else %}
+                            <i class="fas fa-user-circle fa-6x text-primary"></i>
+                        {% endif %}
+                    </div>
+                    <h4 class="text-white">{{ user.get_full_name|default:user.username }}</h4>
+                    <p class="text-white-50">
+                        {% if user.is_owner %}
+                            Owner
+                        {% elif user.is_manager %}
+                            Branch Manager
+                        {% elif user.is_salesagent %}
+                            Sales Agent
+                        {% else %}
+                            Staff
+                        {% endif %}
+                    </p>
+                    <p class="text-white-50">{{ user.branch.branch_name }} Branch</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Card -->
+        <div class="col-md-8">
+            <div class="card shadow-lg" id="glass-effect">
+                <div class="card-body">
+                    <h5 class="card-title text-white mb-4">Account Information</h5>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <p class="text-white-50 mb-0">Username</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-white mb-0">{{ user.username }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <p class="text-white-50 mb-0">Email</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-white mb-0">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <p class="text-white-50 mb-0">Phone</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-white mb-0">{{ user.phone }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <p class="text-white-50 mb-0">Gender</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-white mb-0">{{ user.gender }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <p class="text-white-50 mb-0">Last Login</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-white mb-0">{{ user.last_login|date:"F d, Y H:i" }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <p class="text-white-50 mb-0">Joined Date</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-white mb-0">{{ user.date_joined|date:"F d, Y" }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'edit_account' %}" class="btn btn-primary me-2">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                        <a href="{% url 'change_password' %}" class="btn btn-warning">
+                            <i class="fas fa-key"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,7 +4,7 @@
 {% block content %}
     <div class="tableglass-effect">
         <strong><h1 class="text-center mb-4 fs-1">All Paid Sales</h1></strong>
-       <table class="table table-hover rounded-lg shadow-sm boarder-radius-2xl bg-white/10 backdrop-blur-md border border-white/30 font-semibold hover:bg-opacity-70 duration-300 shadow-lg ">
+       <table class="table table-hover rounded-lg shadow-sm boarder-radius-2xl bg-white/10 backdrop-blur-md ">
             <thead>
                 <tr class="fs-5">
                     <th scope="col ">Product Name</th>
@@ -14,6 +14,7 @@
                     <th scope="col">Total cost</th>
                     <th scope="col">Date</th>
                     <th scope="col">Details</th>
+                    <th scope="col">Receipt</th>
                 </tr>
                 
                 <!-- <tr scope="col">Sales agent</tr> -->
@@ -31,11 +32,11 @@
                     <td>
                         
                         
-                        <a href="{% url 'sale_detail' sale.id %}" class="px-6 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/30 font-semibold hover:bg-opacity-70 duration-300 shadow-lg "><input type="submit" value="Check Out"></a>
+                        <a href="{% url 'sale_detail' sale.id %}" class="btn btn-outline-secondary text-green-900 hoover:" data-mdb-ripple-init data-mdb-ripple-color="dark"><input type="submit" value="Check Out"></a>
                     </td>
                     <td>
-                        <a href="{% url 'receipt_detail' sale.id %}" class="text-blue-500 hover:underline">
-                            <input type="button" value="Final receipt" class="bg-blue-500 text-white rounded">
+                        <a href="{% url 'receipt_detail' sale.id %}" class=" px-4 w-5px fas fa-receipt" style="color: brown;">
+                            <input type="button" value="" >
                         </a>
                     </td>
                 

@@ -1,25 +1,147 @@
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
-
+from django.contrib import messages
 # Create your views here.
 from .models import *
 from django.urls import reverse
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from .forms import *
 # borrowing decorators for authentication
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserCreation
 
+from django.db.models import Sum, F, FloatField
+from django.db.models.functions import Coalesce
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+ 
+@login_required
+def all_branches(request):
+    branches = Branch.objects.all()
+    return render(request, 'happy_hoeapp/branch.html', {'branches': branches})
+
+
+
+@login_required
+def add_branch(request):
+    if request.method == 'POST':
+        form = BranchForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Branch created successfully!')
+            return redirect('branches_list')
+    else:
+        form = BranchForm()
+    return render(request, 'happy_hoeapp/add_branch.html', {'form': form})
+
+
+@login_required
+def all_users(request):
+    # excluding the superuser
+    users = Userprofile.objects.exclude(is_superuser=True).order_by('-date_joined')
+    
+    # Get counts for different user types
+    total_users = users.count()
+    total_managers = users.filter(is_manager=True).count()
+    total_salesagents = users.filter(is_salesagent=True).count()
+    
+    context = {
+        'users': users,
+        'total_users': total_users,
+        'total_managers': total_managers,
+        'total_salesagents': total_salesagents,
+        'title': 'Users Management'
+    }
+    
+    return render(request, 'happy_hoeapp/users.html', context)
+
+def stock_detail(request, stock_id):
+    stock = Stock.objects.get(id=stock_id)
+
+    return render(request, 'fooapp/detail.html', {'stock': stock})
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_director)
+def edit_branch(request, pk):
+    branch = get_object_or_404(Branch, pk=pk)
+    if request.method == 'POST':
+        form = BranchForm(request.POST, instance=branch)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Branch updated successfully!')
+            return redirect('all_branches')
+    else:
+        form = BranchForm(instance=branch)
+    return render(request, 'happy_hoeapp/edit_branch.html', {'form': form, 'branch': branch})
+
+@login_required
+@user_passes_test(lambda u: u.is_director)
+def delete_branch(request, pk):
+    branch = get_object_or_404(Branch, pk=pk)
+    if request.method == 'POST':
+        branch.delete()
+        messages.success(request, 'Branch deleted successfully!')
+        return redirect('all_branches')
+    return redirect('all_branches')
+
 # view for the index page
 def index(request):
     context = {
-        "site_name": "happy hoe management system",       
+        "site_name": "Kgl management system",       
         "products": ["G'nuts", "Beans", "Maize", "soybeans", "cowpeas"],
     }
     # getting all the registered stock from our data base
     stocks=Stock.objects.all().order_by('-id')
 
     return render(request,"happy_hoeapp/index.html", {"stocks": stocks})
+
+def categories(request):
+    categories = Category.objects.all().order_by('-id')
+    if request.method == 'POST':
+        data = request.POST
+        try:
+            category = Category.objects.create(
+                category_name=data.get('category_name'),
+                description=data.get('description')
+            )
+            messages.success(request, f'Category "{category.category_name}" added successfully!')
+            return redirect('categories')
+        except Exception as e:
+            messages.error(request, f'Error adding category: {str(e)}')
+    
+    return render(request, "happy_hoeapp/category.html", {'categories': categories})
+# view for deleting category
+def delete_category(request, pk):
+    category = get_object_or_404(Category, id=pk)
+    if request.method == 'POST':
+        category_name = category.category_name
+        category.delete()
+        messages.success(request, f'Category "{category_name}" deleted successfully!')
+        return redirect('categories')
+    return render(request, "happy_hoeapp/delete_category.html", {'category': category})
+
+# view for editting the category
+def edit_category(request, pk):
+    try:
+        category = get_object_or_404(Category, id=pk)
+        
+        if request.method == 'POST':
+            category.category_name = request.POST.get('category_name')
+            category.description = request.POST.get('description')
+            category.save()
+            messages.success(request, f'Category "{category.category_name}" updated successfully!')
+            return redirect('categories')
+            
+        return render(request, 'happy_hoeapp/edit_category.html', {
+            'category': category
+        })
+    except Exception as e:
+        messages.error(request, f'Error updating category: {str(e)}')
+        return redirect('categories')
 
 #  view for the add_stock
 def add_stock(request, pk):
@@ -40,8 +162,32 @@ def add_stock(request, pk):
     return render(request,"happy_hoeapp/add_stock.html", {"form": form})
 
 #  view for the allstock
-def all_stock(request):
-    return render(request,"happy_hoeapp/allstock.html")
+def Procurement(request):
+    if request.method=='POST':
+        data=request.POST
+        #new_amount = int(sent_amount) / 3670
+        procurement= Stock(**{
+            "Category_name": data.get('Category_name'),
+            "product_name":data.get('product_name'),
+            "tota_quantity":data.get('total_quantity'),
+            "received_quantity":data.get('received_quantity'),
+            "cost_of_stock":data.get('cost_of_stock'),
+            "unit_cost":data.get('unit_cost'),
+            "unit_price":data.get('unit_price'),
+            "date_of_stock": data.get('date_of_stock'),
+            "supplier_name": data.get('supplier_name'),
+            "type_of_stock":data.get('type_of_stock'),
+            "entry_agent":data.get('entry_agent'),
+
+
+        })
+
+        procurement.save()
+        messages.succes(request, 'Stock addded successfully!')
+        return redirect ('index')
+    
+    
+    return render(request,"happy_hoeapp/procurement.html")
 
 #  view for the addsale
 def add_sale(request):
@@ -64,8 +210,9 @@ def sales(request):
 
 # aview to handle a link to handle a particular item for a sale
 def stock_detail(request, stock_id):
-    stock = Stock.objects.get(id=stock_id)
-
+    stock = get_object_or_404(Stock, id=stock_id)
+    if stock.branch != request.user.branch and not request.user.is_superuser:
+        raise "PermissionDenied"
     return render(request, 'happy_hoeapp/detail.html', {'stock': stock})
 def issue_item(request,pk):
     # creating a variable issued item and acces all entries in the stock model by their models 
@@ -108,7 +255,7 @@ def Login(request):
         # ckecking the logging in user
         user = authenticate(request, username=username, password=password)
         # checking if the user is not None and is an owner
-        if user is not None and user.is_owner == True:
+        if user is not None and user.is_director == True:
             form = login(request, user)
             return redirect('/owner_dashboard')
                 
@@ -128,11 +275,7 @@ def Login(request):
 
 #view for the owner dashboard
 def owner(request):
-    from django.db.models import Sum, F, FloatField
-    from django.db.models.functions import Coalesce
-    import json
-    from django.core.serializers.json import DjangoJSONEncoder
-
+    
     # Get totals for dashboard cards
 
     total_sales = Sale.objects.count()
@@ -190,6 +333,7 @@ def owner(request):
 
 #view for the managers dashboard
 def manager(request):
+
     return render(request, 'happy_hoeapp/manager_dashboard.html')
 
 def  signup(request):
@@ -200,11 +344,40 @@ def  signup(request):
             username = form.cleaned_data.get('username')
 
             email = form.cleaned_data.get('email')
-            return redirect('/login')
+            return redirect('/')
     else: 
         form = UserCreation()
     return render(request, 'happy_hoeapp/signup.html', {'form': form})
 
+def user_detail (request, user_id):
+    user = get_object_or_404(Userprofile,id=user_id)
+    return render(request, 'happy_hoeapp/user_detail.html', {'user': user})
+
+def edit_user(request, pk):
+    user=Userprofile.objects.get(id=pk)
+    form = UserCreation(instance=user)
+
+    if request.method=='POST':
+        form = UserCreation(request.POST, instance=user)
+        if form.is_valid():
+            updated_user= form.save(commit=False)
+            updated_user.save()
+            return redirect('all_users')
+    context = {
+        'form': form,
+        'user': user,
+        'title': 'Edit User'
+    }
+    return render(request, 'happy_hoeapp/edit_user.html', context)
+
+def delete_user(request, user_id):
+    user = get_object_or_404(Userprofile, id=user_id)
+
+    if request.method == 'POST':
+        user.delete()
+        return redirect('user')  # Redirect to user list or homepage
+
+    return render(request, 'users/confirm_delete.html', {'user': user})
 
 def edit_stock(request, pk):
     stock_item = Stock.objects.get(id=pk)
@@ -276,3 +449,44 @@ def sales(request):
     sales=Sale.objects.all().order_by('-id')
     return render(request,"happy_hoeapp/transactions.html", {"sales": sales})
 
+def delete_stock(request, pk):
+    delete_stock = get_object_or_404(Stock,id=pk)
+
+    if request.method == 'POST':
+        data=request.POST
+        delete_stock.delete()
+        messages.success(request, "stock deleted successfully.")
+        return redirect('index')
+
+    context = {
+        'delete_stock': delete_stock,
+    }
+    return render(request, 'happy_hoeapp/delete_product.html', context)
+
+
+def delete_sale(request, pk):
+    sale = get_object_or_404(Sale, id=pk)
+    
+    if request.method == 'POST':
+        # Restore the stock quantity before deleting the sale
+        product = sale.product_name
+        product.total_quantity += sale.quantity
+        product.save()
+        
+        # Delete the sale
+        sale.delete()
+        return redirect('sales')
+        
+    return render(request, 'happy_hoeapp/delete_sale.html', {'sale': sale})
+
+def add_fullstock(request):
+    
+        
+    return render(request, "add.html")
+
+def Logout(request):
+    return render(request, 'happy_hoeapp/logout.html')
+    
+
+def base3 (request):
+    return render(request, 'happy_hoeapp/base3.html')

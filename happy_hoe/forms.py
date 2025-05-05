@@ -10,6 +10,10 @@ class AddStockForm (ModelForm):
         fields = "__all__"    
 
 class AddSaleForm (ModelForm):
+    is_credit_sale = forms.BooleanField(required=False, label="Credit Sale")
+    customer_name = forms.CharField(required=False, label="Customer Name")
+    national_id = forms.CharField(required=False, label="National ID")
+    customer_contact = forms.CharField(required=False, label="Contact")
     amount_received = forms.IntegerField(required=True, label="Amount Received")
     class Meta:
         model = Sale
@@ -59,13 +63,26 @@ class CreditSaleForm(forms.ModelForm):
     class Meta:
         model = CreditSale
         fields = [
+            'sale',
             'customer_name',
             'national_id',
             'contact',
             'location',
             'due_date',
-            'amount_due',
+            'amount_paid',
+            'balance',
+            'status',
+            
         ]
         widgets = {
             'due_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class BranchForm(forms.ModelForm):
+    class Meta:
+        model = Branch
+        fields = "__all__"
+        widgets = {
+            'opening_date': forms.DateInput(attrs={'type': 'date'}),
+            'phone_number': forms.TextInput(attrs={'placeholder': '+256XXXXXXXXX'})
         }

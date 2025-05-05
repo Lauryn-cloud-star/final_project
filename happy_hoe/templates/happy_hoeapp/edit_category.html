@@ -1,0 +1,80 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
+{% block title %}Edit Category{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="tableglass-effect">
+        <div class="card-header">
+            <h4 class="text-white mb-0">Edit Category</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="category_name" class="form-label text-white">Category Name</label>
+                            <input type="text" 
+                                   name="category_name" 
+                                   class="form-control" 
+                                   id="category_name"
+                                   value="{{ category.category_name }}"
+                                   required 
+                                   minlength="2">
+                            <div class="invalid-feedback">
+                                Please enter a category name (minimum 2 characters).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="description" class="form-label text-white">Description</label>
+                            <textarea name="description" 
+                                      class="form-control" 
+                                      id="description" 
+                                      rows="3">{{ category.description }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'categories' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .tableglass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}

@@ -16,11 +16,12 @@
    
     <!-- style="background-image: url(/static/images/f1.webp); background-position: center; background-size: cover; backdrop-filter: blur(10px);" -->
     <div class="header fixed-top mt-0 mb-10"  id="nav-effect">
-        
-        <img src="{% static 'images/trans.png' %}" alt="Logo" class="logo" /> 
+        {% if user.is_authenticated %}
+        <img src="{% static 'images/straight.png' %}" alt="Logo" class="logo" /> 
+    
+        <strong><h2 class="text-white text-center ml-5">Welcome to  {{ user.username }} {{ user.branch.branch_name }} branch</h2></strong>
         
         <div class="search-container ">
-           
             <input type="text" placeholder="Search...">
             <i class="fas fa-search items-center justify-center"></i>
         </div>
@@ -39,25 +40,36 @@
                    
                     <div class="header ">
                         
-                        <strong><h3 class="text-blue-400">Happy Hoe App</h3></strong>
+                        <strong><h3 class="text-blue-400">KGL</h3></strong>
                         <!-- <div class="border-b my-2"></div> -->
                     </div>
                     <div class="body">
                         <nav class="navbar ">
                             <div class="container-fluid">
                                 <ul>
-                                    <a class="" href="/home/"><li><i class="fas fa-home"></i> Dashboard</li></a>
+                                    <a class="" href="/owner_dashboard/"><li><i class="fas fa-home"></i> Dashboard</li></a>
+                
+                                    <div class="border-b my-3"></div>
+                                    <li class="nav-heading text-decoration: underline;">Procurement</li>                             
+                                    
+                                    <a href="/procurement/"><li class="active"><i class="far fa-lemon"></i> Produce</li></a>
+                                    <a class="" href="/home/"><li><i class="fas fa-shopping-cart"></i> Stock</li></a>
                                      
-                                    <a class="" href=""><li><i class="fas fa-search"></i> Search</li></a> 
-                                    <a href="/sales/"><li class="active"><i class="fas fa-chart-line"></i> Sales</li></a>
-                                    <a class="" href=""><li><i class="fas fa-receipt"></i> Receipts</li></a> 
-                                    <a class="" href="/home/"><li><i class="fas fa-shopping-cart"></i> Stock</li></a> 
-                                
-                                    <a class="" href=""><li><i class="fas fa-comments"></i> Messages</li></a> 
-                                    <div class="border-b my-1"></div>
-                                    <a class="" href=""><li><i class="fas fa-user-circle"></i> Account</li></a> 
-                                    <a class="" href="/logout/"><li><i class="fas fa-sign-out-alt"></i> Logout</li></a> 
-                                
+                                    <div class="border-b my-3"></div>
+                                    <li class="nav-heading">Selling</li>
+                                                    
+                                    <a href="/sales/"><li class="active"><i class="fas fa-receipt"></i> Paid Sales</li></a>
+                                    <a href="/credit_sales/"><li><i class="fas fa-credit-card"></i> Credit Sales</li></a>
+                                    
+                                    
+
+                                    <div class="border-b my-3"></div>
+                                    {% if user.is_manager or user.is_director %}
+                                    <a href="users"><li><i class="fas fa-users"></i> Users</li></a>
+                                    {% endif %}
+                                    <a class="" href=""><li><i class="fas fa-user-circle"></i> Account</li></a>
+                                    <a class="" href="/logout/"><li><i class="fas fa-sign-out-alt"></i> Logout</li></a>
+                                                    
                                 </ul>
                             </div>
 
@@ -69,8 +81,18 @@
                 </div>
                    <!-- end of side bar -->
             </div>
+            {% endif %}
            <div class="col-md-10">
             <br><br><br>
+            <div class="messages-container">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} fade show" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
                 <!-- Main Content -->
                 <div class="container2 container-fluid p-3 flex-grow-1">
                     {% block content %}
@@ -84,12 +106,73 @@
     <footer class="bg-black bg-opacity-70 text-center p-2 mt-2">
         <div class="flex justify-center space-x-2 mb-2">
             <a href="#" class="text-white hover:underline">Designed by Lauryn Hope</a>
-            <!-- <a href="#" class="text-white hover:underline">Terms of Service</a> -->
+            
             <p class="text-sm text-white">© 2025 Karibu Groceries. All rights reserved.</p>
         </div>
         
     </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+<!-- Add this right before the closing </body> tag -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Enhanced form validation
+    (function () {
+        'use strict'
+        
+        // Fetch all forms that need validation
+        const forms = document.querySelectorAll('.needs-validation')
+        
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    
+                    // Find all invalid fields
+                    const invalidFields = form.querySelectorAll(':invalid')
+                    if (invalidFields.length > 0) {
+                        // Focus the first invalid field
+                        invalidFields[0].focus()
+                    }
+                }
+                
+                form.classList.add('was-validated')
+            }, false)
+            
+            // Add real-time validation feedback
+            const inputs = form.querySelectorAll('input, select, textarea')
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (!input.checkValidity()) {
+                        input.classList.add('is-invalid')
+                    } else {
+                        input.classList.remove('is-invalid')
+                        input.classList.add('is-valid')
+                    }
+                })
+            })
+        })
+    })()
+    <!-- Add this right before the closing </body> tag, after your other scripts -->
+
+    // Auto dismiss messages after 4 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(function(message) {
+                // Add fade out effect
+                message.style.transition = 'opacity 0.5s ease-in-out';
+                message.style.opacity = '0';
+                // Remove message after fade
+                setTimeout(function() {
+                    message.remove();
+                }, 500);
+            });
+        }, 4000); // 4 seconds
+    });
+
+</script>
 </body>
 </html>
