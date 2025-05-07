@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Hoe App - Owner Dashboard</title>
+    <title>Director Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
        :root {
@@ -273,10 +273,10 @@
             {% endif %}
         </div>
         
-        <!-- Stats Cards -->
+        <!-- cards for the firector to view statistics -->
         <div class="stats-cards">
             <div class="stats-card sales">
-                <h3>Total Sales</h3>
+                <h3>Total Sales Count</h3>
                 <h2>{{ total_sales }}</h2>
             </div>
             <div class="stats-card stock">
@@ -284,7 +284,7 @@
                 <h2>Kgs:{{ total_stock }}</h2>
             </div>
             <div class="stats-card credit">
-                <h3>Credit Sales</h3>
+                <h3>Credit Sales Amount</h3>
                 <h2>{{ total_credit_sales }}</h2>
             </div>
             <div class="stats-card users">
@@ -293,7 +293,21 @@
             </div>
         </div>
         
-        <!-- Categories -->
+        <div class="stats-cards">
+            <div class="stats-card sales">
+                <h3>Total Sales Amount</h3>
+                <h2>{{ total_saless }}</h2>
+            </div>
+           
+            <div class="stats-card credit">
+                <h3>Credit Sales Amount</h3>
+                <h2>{{ total_credit_saless|intcomma }}</h2>
+            </div>
+           
+        </div>
+
+
+        <!-- produtcs -->
         <div class="categories">
             <div class="category-item">
                 <div class="category-icon">🌾</div>
@@ -318,6 +332,7 @@
         </div>
         
         <!-- Charts Row with Sales Chart and Low Stock Alerts -->
+         
         <div class="charts-row">
             <div class="chart-card">
                 <h4>Current Stock Levels</h4>
@@ -332,12 +347,12 @@
                 </div>
             </div>
         </div>
-
+        {% if user.is_manager %}
         <div class="alerts">
             <div class="low-stock-alert">
                 <h4><span>⚠️</span> Low Stock Alerts</h4>
                 <ul>
-                    <li>Bean (300 kgs remaining)</li>
+                    <li>SoyBeans (190 kgs remaining)</li>
                     <li>Cowpeas (300 kgs remaining)</li>
                 </ul>
             </div>
@@ -383,6 +398,7 @@
                 </table>
             </div>
         </div>
+        {% endif %}
     </div>
     
     <script>
@@ -436,37 +452,32 @@
         });
 
         // Sales Distribution Pie Chart
-        const salesCtx = document.getElementById('salesChart').getContext('2d');
-        new Chart(salesCtx, {
-            type: 'doughnut',
-            data: {
-                labels: salesData.map(item => item.product_name.charAt(0).toUpperCase() + item.product_name.slice(1)),
-                datasets: [{
-                    data: salesData.map(item => item.total_sales),
-                    backgroundColor: [
-                        '#28a745',  // Green for beans
-                        '#007bff',  // Blue for maize
-                        '#ffc107',  // Yellow for soybeans
-                        '#17a2b8',  // Cyan for gnuts
-                        '#dc3545'   // Red for cowpeas
-                    ],
-                    borderColor: 'rgba(255, 255, 255, 0.8)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'right'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Sales by Product'
+        new Chart(document.getElementById('salesChart'), {
+        type: 'doughnut',
+        data: {
+            labels: salesData.map(item => item.product_name),
+            datasets: [{
+                data: salesData.map(item => item.total_amount),
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'right' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `UGX ${new Intl.NumberFormat().format(context.raw)}`;
+                        }
                     }
                 }
             }
-        });
+        }
+    });
+
     </script>
 </body>
 </html>

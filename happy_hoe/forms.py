@@ -4,16 +4,26 @@ from django import forms
 # accessing our models inorder to create corresponding forms
 
 from .models import *
+class Produce(ModelForm):
+    class Meta:
+        model = Produce
+        fields = '__all__'
+        
 class AddStockForm (ModelForm):
     class Meta:
         model = Stock
         fields = "__all__"    
 
 class AddSaleForm (ModelForm):
-    is_credit_sale = forms.BooleanField(required=False, label="Credit Sale")
-    customer_name = forms.CharField(required=False, label="Customer Name")
-    national_id = forms.CharField(required=False, label="National ID")
-    customer_contact = forms.CharField(required=False, label="Contact")
+    product_name = forms.ModelChoiceField(
+        queryset=Stock.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'product-select'})
+    )
+    quantity = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'id': 'quantity-input'})
+    )
+
+    
     amount_received = forms.IntegerField(required=True, label="Amount Received")
     class Meta:
         model = Sale
@@ -45,38 +55,58 @@ class UserCreation(UserCreationForm):
             user.is_staff = True
             user.save()
         return user
-            
-from django import forms
-
-
+    
+class UpdateUserCreation(forms.ModelForm):
+    class  Meta:
+        model = Userprofile
+        fields='__all__'
+    
 class EditStockForm(forms.ModelForm):
     class Meta:
         model = Stock
-        fields = '__all__'  # adjust based on your model
+        fields = '__all__'  
 
 class UpdateSaleForm(forms.ModelForm):
     class Meta:
         model = Sale
-        fields = '__all__'  # adjust as per your model
+        fields = '__all__'  
 
 class CreditSaleForm(forms.ModelForm):
     class Meta:
         model = CreditSale
-        fields = [
-            'sale',
-            'customer_name',
-            'national_id',
-            'contact',
-            'location',
-            'due_date',
-            'amount_paid',
-            'balance',
-            'status',
-            
-        ]
+        fields ='__all__'
         widgets = {
-            'due_date': forms.DateInput(attrs={'type': 'date'}),
+            'due_date': forms.DateInput(attrs={'type': 'date'})
         }
+
+
+
+class UpdateCreditSaleForm(forms.ModelForm):
+    class Meta:
+        model = CreditSale
+        fields = ['status']
+        
+
+    def clean_amount_paid(self):
+        amount_paid = self.cleaned_data.get('amount_paid')
+        current_amount = self.instance.amount_paid
+        if amount_paid < current_amount:
+            raise forms.ValidationError("New payment amount cannot be less than previous amount")
+        return amount_paid
+
+    def save(self, commit=True):
+        credit_sale = super().save(commit=False)
+        credit_sale.balance = credit_sale.sale.total_sale() - credit_sale.amount_paid
+        if credit_sale.balance <= 0:
+            credit_sale.status = 'PAID'
+        elif credit_sale.due_date < timezone.now().date():
+            credit_sale.status = 'OVERDUE'
+        if commit:
+            credit_sale.save()
+        return credit_sale
+
+
+
 
 class BranchForm(forms.ModelForm):
     class Meta:

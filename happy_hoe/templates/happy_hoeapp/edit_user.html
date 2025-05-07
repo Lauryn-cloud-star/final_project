@@ -1,8 +1,39 @@
-{% extends 'happy_hoeapp/base.html' %}
+{% extends 'happy_hoeapp/base2.html' %}
 {% load crispy_forms_tags %}
-
+{% block extra_css %}
+<style>
+     
+     .form-label {
+        color: white !important;
+    }
+    .form-text {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    .card {
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.3) !important;
+    }
+    .mb-3{
+        color: white;
+    }
+    
+</style>
+{% endblock %}
 {% block content %}
-<div class="container mt-4">
+<br>
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg" id="glass-effect">
@@ -10,14 +41,22 @@
                     <h3 class="text-white mb-0">Edit User - {{ user.username }}</h3>
                 </div>
                 <div class="card-body">
-                    <form method="POST">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="POST" action="{% url 'edit_user' user.id %}">
                         {% csrf_token %}
                         <div class="text-white">
                             {{ form|crispy }}
                         </div>
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">Save Changes</button>
-                            <a href="{% url 'all_users' %}" class="btn btn-secondary">Cancel</a>
+                            <a href="{% url 'users' %}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>

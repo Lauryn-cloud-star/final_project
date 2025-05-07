@@ -48,8 +48,8 @@ urlpatterns = [
     # path('edit_sale/<str:pk>/', views.edit_sale, name="edit_sale"),
     path('sales/<int:pk>/', views.sale_detail, name="sale_detail"),
     path('sales/<int:pk>edit/', views.edit_sale, name="edit_sale"),
-    path('credit_sale/create/<int:sale_id>/', views.create_credit_sale, name='create_credit_sale'),
-    path('credit_sale/edit/<int:pk>/', views.edit_credit_sale, name='edit_credit_sale'),
+    # path('credit_sale/create/<int:sale_id>/', views.create_credit_sale, name='create_credit_sale'),
+    # path('credit_sale/edit/<int:pk>/', views.edit_credit_sale, name='edit_credit_sale'),
     # path('credit-sale/<int:pk>/', views.credit_sale_detail, name='credit_sale_detail'),
     path('delete_stock/<str:pk>/',views.delete_stock, name="delete_stock"),
     path('sale/<int:pk>/delete/', views.delete_sale, name='delete_sale'),
@@ -62,5 +62,12 @@ urlpatterns = [
      path('users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
     path('branch/add/', views.add_branch, name='add_branch'),
     path('users/<int:pk>/edit/', views.edit_user, name='edit_user'),
+    
+    path('credit_sales/', views.all_credit_sales, name='credit_sales'),
+    path('create_credit_sale/<int:sale_id>/', views.create_credit_sale, name='create_credit_sale'),
+    path('update_credit_sale/<int:pk>/', views.update_credit_sale, name='update_credit_sale'),
+    path('credit_sale_detail/<int:pk>/', views.credit_sale_detail, name='credit_sale_detail'),
+    path('profile/<int:user_id>/', views.user_profile, name='user_profile'),
+    path('search/', views.search, name='search'),
     
 ]

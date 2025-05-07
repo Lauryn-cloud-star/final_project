@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
+
+from django.db.models import Q
 # Create your views here.
 from .models import *
 from django.urls import reverse
+from django.db import IntegrityError
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from .forms import *
@@ -12,11 +16,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserCreation
 
-from django.db.models import Sum, F, FloatField
+from django.db.models import Sum, F, FloatField,Count
 from django.db.models.functions import Coalesce
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.humanize.templatetags.humanize import intcomma
  
+def can_view_branch(user, branch):
+    """Check if user can view data from a specific branch"""
+    return user.is_director or user.branch == branch
+
 @login_required
 def all_branches(request):
     branches = Branch.objects.all()
@@ -40,8 +49,12 @@ def add_branch(request):
 @login_required
 def all_users(request):
     # excluding the superuser
-    users = Userprofile.objects.exclude(is_superuser=True).order_by('-date_joined')
-    
+    if request.user.is_director:
+        users = Userprofile.objects.exclude(is_superuser=True).order_by('-date_joined')
+    else:
+        users = Userprofile.objects.filter(branch=request.user.branch)
+
+
     # Get counts for different user types
     total_users = users.count()
     total_managers = users.filter(is_manager=True).count()
@@ -57,6 +70,8 @@ def all_users(request):
     
     return render(request, 'happy_hoeapp/users.html', context)
 
+# stock_details
+@login_required
 def stock_detail(request, stock_id):
     stock = Stock.objects.get(id=stock_id)
 
@@ -78,6 +93,8 @@ def edit_branch(request, pk):
         form = BranchForm(instance=branch)
     return render(request, 'happy_hoeapp/edit_branch.html', {'form': form, 'branch': branch})
 
+
+
 @login_required
 @user_passes_test(lambda u: u.is_director)
 def delete_branch(request, pk):
@@ -88,17 +105,24 @@ def delete_branch(request, pk):
         return redirect('all_branches')
     return redirect('all_branches')
 
+
+
 # view for the index page
 def index(request):
+    if request.user.is_director:
+        stocks = Stock.objects.all()
+    else:
+        stocks = Stock.objects.filter(branch=request.user.branch)
+    
     context = {
-        "site_name": "Kgl management system",       
-        "products": ["G'nuts", "Beans", "Maize", "soybeans", "cowpeas"],
+        'stocks': stocks,
+        'title': 'Stock List'
     }
-    # getting all the registered stock from our data base
-    stocks=Stock.objects.all().order_by('-id')
 
     return render(request,"happy_hoeapp/index.html", {"stocks": stocks})
 
+@login_required
+# A view for creating the categories
 def categories(request):
     categories = Category.objects.all().order_by('-id')
     if request.method == 'POST':
@@ -114,6 +138,9 @@ def categories(request):
             messages.error(request, f'Error adding category: {str(e)}')
     
     return render(request, "happy_hoeapp/category.html", {'categories': categories})
+
+
+@login_required
 # view for deleting category
 def delete_category(request, pk):
     category = get_object_or_404(Category, id=pk)
@@ -124,7 +151,10 @@ def delete_category(request, pk):
         return redirect('categories')
     return render(request, "happy_hoeapp/delete_category.html", {'category': category})
 
+
+
 # view for editting the category
+@login_required
 def edit_category(request, pk):
     try:
         category = get_object_or_404(Category, id=pk)
@@ -143,7 +173,9 @@ def edit_category(request, pk):
         messages.error(request, f'Error updating category: {str(e)}')
         return redirect('categories')
 
+
 #  view for the add_stock
+@login_required
 def add_stock(request, pk):
     issued_item = Stock.objects.get(id=pk)
     form = UpdateStockForm(request.POST )
@@ -161,7 +193,9 @@ def add_stock(request, pk):
     
     return render(request,"happy_hoeapp/add_stock.html", {"form": form})
 
+
 #  view for the allstock
+@login_required
 def Procurement(request):
     if request.method=='POST':
         data=request.POST
@@ -190,6 +224,7 @@ def Procurement(request):
     return render(request,"happy_hoeapp/procurement.html")
 
 #  view for the addsale
+@login_required
 def add_sale(request):
     return render(request,"happy_hoeapp/add_sale.html")
 #  view for the addstock
@@ -202,7 +237,7 @@ def all_sales(request):
     return render(request,"happy_hoeapp/all_sales.html")
 
 #  view for the receipt
-
+@login_required
 def sales(request):
     # getting all the registered sales from our data base
     sales=Sale.objects.all().order_by('-id')
@@ -214,7 +249,13 @@ def stock_detail(request, stock_id):
     if stock.branch != request.user.branch and not request.user.is_superuser:
         raise "PermissionDenied"
     return render(request, 'happy_hoeapp/detail.html', {'stock': stock})
+
+
+# aview for sellingout an item
+@login_required
+@user_passes_test(lambda u: u.is_salesagent or u.is_manager)
 def issue_item(request,pk):
+    stock_item = Stock.objects.get(id=pk)
     # creating a variable issued item and acces all entries in the stock model by their models 
     issued_item=Stock.objects.get(id=pk)
     # acccessing our form from forms.py
@@ -236,7 +277,8 @@ def issue_item(request,pk):
             return redirect ('sales')
     return render(request, 'happy_hoeapp/issue_item.html', {
         'sales_form': sales_form,
-        'issued_item': issued_item
+        'issued_item': issued_item,
+        'stock': stock_item
     })
 
 def receipt_detail(request, receipt_id):
@@ -274,181 +316,129 @@ def Login(request):
     return render(request, 'happy_hoeapp/login.html', {'form': form, 'title': 'Login'})
 
 #view for the owner dashboard
+@login_required
+
 def owner(request):
-    
-    # Get totals for dashboard cards
+    # getting all the queries from tha database
+    sales = Sale.objects.all()
+    stock = Stock.objects.all()
+    branches = Branch.objects.all()
+    users = Userprofile.objects.all()
+    credit_sales = Sale.objects.filter(payment_method='Credit')
 
-    total_sales = Sale.objects.count()
-    total_stock = Stock.objects.aggregate(total=Sum('total_quantity'))['total'] 
-    total_credit_sales = CreditSale.objects.count()
-    total_users = Userprofile.objects.count()
-    
-    # Get low stock alerts (items with quantity less than 10)
-    low_stock_items = Stock.objects.filter(total_quantity__lt=10)
-    
-    # Get stock data for bar graph - aggregate by product name
-    stock_data = []
-    for choice in Stock.product_choices:
-        product_name = choice[0]  # Get the value from the choice tuple
-        quantity = Stock.objects.filter(product_name=product_name).aggregate(
-            total=Coalesce(Sum('total_quantity'), 0)
+    # calculating tha total amounts
+    total_sales_amount = Sale.objects.aggregate(
+    total=Sum(F('unit_price') * F('quantity'))
+)['total']
+   
+    total_credit_saless = CreditSale.objects.aggregate(
+            total=Sum(F('sale__unit_price') * F('sale__quantity'))
         )['total']
-        stock_data.append({
-            'product_name': product_name,
-            'quantity': quantity
-        })
-    
-    # Get sales data for pie chart - aggregate total sales value by product
-    sales_data = []
-    for choice in Stock.product_choices:
-        product_name = choice[0]
-        total_sales_value = Sale.objects.filter(product_name__product_name=product_name).aggregate(
-            total=Coalesce(Sum(F('quantity') * F('unit_price'), output_field=FloatField()), 0.0)
-        )['total']
-        sales_data.append({
-            'product_name': product_name,
-            'total_sales': float(total_sales_value)
-        })
-    
-    # Get all products for the table
 
-    stocks = Stock.objects.all().order_by('-id')
+    # data for charts
+    stock_data = list(stock.values('product_name').annotate(
+        quantity=Sum('total_quantity')
+    ))
     
+    sales_data = list(Sale.objects.values('product_name__product_name').annotate(
+        total_amount=Sum(F('unit_price') * F('quantity')),
+        product_name=F('product_name__product_name')
+    ).order_by('-total_amount'))
+    
+
+    
+
     context = {
-        'total_sales': total_sales,
-        'total_stock': total_stock,
-        'total_credit_sales': total_credit_sales,
-        'total_users': total_users,
-        'low_stock_items': low_stock_items,
+        'total_saless': f"UGX {intcomma(total_sales_amount)}",
+        'total_sales': sales.count(),
+        'total_stock': stock.aggregate(Sum('total_quantity'))['total_quantity__sum'] or 0,
+        'total_credit_sales': credit_sales.count(),
+        'total_credit_saless': f"UGX {intcomma(total_credit_saless)}",
+        'total_users': users.count(),
         'stock_data_json': json.dumps(stock_data, cls=DjangoJSONEncoder),
         'sales_data_json': json.dumps(sales_data, cls=DjangoJSONEncoder),
-        'stocks': stocks,
+        'stocks': stock,
+        'title': 'Director Dashboard'
 
-        
     }
-
+   
     
-
-    return render(request, 'happy_hoeapp/owner_dashboard.html', context, )
+    return render(request, 'happy_hoeapp/owner_dashboard.html', context)
 
 #view for the managers dashboard
+@login_required
+@user_passes_test(lambda u: u.is_manager)
 def manager(request):
+    
+   
+    
+    return render(request, 'happy_hoeapp/owner_dashboard.html')
 
-    return render(request, 'happy_hoeapp/manager_dashboard.html')
 
-def  signup(request):
+@login_required
+@user_passes_test(lambda u: u.is_director or u.is_manager)
+def signup(request):
     if request.method == 'POST':
         form = UserCreation(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-
-            email = form.cleaned_data.get('email')
+            user = form.save(commit=False)
+            user.new_field = request.POST.get('new_field', '')
+            user.save()
+            
             return redirect('/')
-    else: 
+    else:
         form = UserCreation()
     return render(request, 'happy_hoeapp/signup.html', {'form': form})
 
+
+# view for seeing the details of a particular user
+@login_required
 def user_detail (request, user_id):
     user = get_object_or_404(Userprofile,id=user_id)
     return render(request, 'happy_hoeapp/user_detail.html', {'user': user})
 
+
+# view for editting the user
+@login_required
+@user_passes_test(lambda u: u.is_director or u.is_manager)
 def edit_user(request, pk):
-    user=Userprofile.objects.get(id=pk)
-    form = UserCreation(instance=user)
-
-    if request.method=='POST':
-        form = UserCreation(request.POST, instance=user)
+    user = get_object_or_404(Userprofile, id=pk)
+    if request.method == 'POST':
+        form = UpdateUserCreation(request.POST, instance=user)
         if form.is_valid():
-            updated_user= form.save(commit=False)
-            updated_user.save()
-            return redirect('all_users')
-    context = {
-        'form': form,
-        'user': user,
-        'title': 'Edit User'
-    }
-    return render(request, 'happy_hoeapp/edit_user.html', context)
+            try:
+                form.save()
+                messages.success(request, f'User {user.username} updated successfully!')
+                return redirect('users')
+            except IntegrityError as e:
+                messages.error(request, 'Error updating user. This username or email may already be in use.')
+    else:
+        form = UpdateUserCreation(instance=user)
+    
+    return render(request, 'happy_hoeapp/edit_user.html', {'form': form,'title': 'edit User'})
 
+#view for deleting the particular user
+@login_required
+@user_passes_test(lambda u: u.is_director or u.is_manager)
 def delete_user(request, user_id):
     user = get_object_or_404(Userprofile, id=user_id)
-
+    
     if request.method == 'POST':
+        username = user.username
         user.delete()
-        return redirect('user')  # Redirect to user list or homepage
-
-    return render(request, 'users/confirm_delete.html', {'user': user})
-
-def edit_stock(request, pk):
-    stock_item = Stock.objects.get(id=pk)
-    form = EditStockForm(instance=stock_item)
-
-    if request.method == 'POST':
-        form = EditStockForm(request.POST, instance=stock_item)
-        if form.is_valid():
-            updated_stock = form.save(commit=False)
-            updated_stock.total_quantity = stock_item.total_quantity + updated_stock.received_quantity
-            updated_stock.save()
-            return redirect('index')  # or wherever you want
-
-    return render(request, 'happy_hoeapp/edit.html', {'form': form, 'stock': stock_item})
-
-
-
-def edit_sale(request, pk):
-    sale_item = Sale.objects.get(id=pk)
-    form = UpdateSaleForm(request.POST or None, instance=sale_item) # use request.POST or None to handle both GET and POST requests
-    if request.method == 'POST':
-        if form.is_valid():
-            
-            
-            form.save()
+        messages.success(request, f'User "{username}" has been deleted successfully.')
+        return redirect('users')
     
-            # to add to the remaining stock quantity is increasing
-            
-            return redirect('sales')
+    return redirect('users')
+# a view for adding stock
+@login_required
+def add_fullstock(request):
     
-    return render(request,"happy_hoeapp/edit_sale.html", {"form": form})
-
-def sale_detail(request,pk):
-    sale= Sale.objects.get(id=pk)
-    return render(request, 'happy_hoeapp/sale_detail.html', {'sale': sale})
-
-def create_credit_sale(request, sale_id):
-    sale = get_object_or_404(Sale, id=sale_id)
-
-    if request.method == 'POST':
-        form = CreditSaleForm(request.POST)
-        if form.is_valid():
-            credit_sale = form.save(commit=False)
-            credit_sale.sale = sale
-            credit_sale.save()
-            return redirect('sales')  # or some detail view
-    else:
-        form = CreditSaleForm()
-
-    return render(request, 'sales/create_credit_sale.html', {'form': form, 'sale': sale})
+        
+    return render(request, "add.html")
 
 
-# Edit existing CreditSale
-def edit_credit_sale(request, pk):
-    credit_sale = get_object_or_404(CreditSale, pk=pk)
-
-    if request.method == 'POST':
-        form = CreditSaleForm(request.POST, instance=credit_sale)
-        if form.is_valid():
-            form.save()
-            return redirect('sales')
-    else:
-        form = CreditSaleForm(instance=credit_sale)
-
-    return render(request, 'sales/edit_credit_sale.html', {'form': form, 'credit_sale': credit_sale})
-
-def sales(request):
-    # getting all the registered sales from our data base
-    sales=Sale.objects.all().order_by('-id')
-    return render(request,"happy_hoeapp/transactions.html", {"sales": sales})
-
+# a view for deleting a particular stock item
 def delete_stock(request, pk):
     delete_stock = get_object_or_404(Stock,id=pk)
 
@@ -464,6 +454,147 @@ def delete_stock(request, pk):
     return render(request, 'happy_hoeapp/delete_product.html', context)
 
 
+# view for editing a particular stock item
+@login_required
+def edit_stock(request, pk):
+    stock_item = Stock.objects.get(id=pk)
+    form = EditStockForm(instance=stock_item)
+
+    if request.method == 'POST':
+        form = EditStockForm(request.POST, instance=stock_item)
+        if form.is_valid():
+            updated_stock = form.save(commit=False)
+            updated_stock.total_quantity = stock_item.total_quantity + updated_stock.received_quantity
+            updated_stock.save()
+            return redirect('index')  # or wherever you want
+
+    return render(request, 'happy_hoeapp/edit.html', {'form': form, 'stock': stock_item})
+
+# a view for the sales table
+@login_required
+def sales(request):
+    # getting all the registered sales from our data base
+    sales=Sale.objects.all().order_by('-id')
+    return render(request,"happy_hoeapp/transactions.html", {"sales": sales})
+
+
+# view for editting a particular sale item
+@login_required
+def edit_sale(request, pk):
+   
+    sale_item = Sale.objects.get(id=pk)
+    form = UpdateSaleForm(request.POST or None, instance=sale_item) # use request.POST or None to handle both GET and POST requests
+    if request.method == 'POST':
+        if form.is_valid():
+            
+            
+            form.save()
+            
+            return redirect('sales')
+    
+    return render(request,"happy_hoeapp/edit_sale.html", {"form": form})
+
+# view for seeing a particular sale details
+@login_required
+def sale_detail(request,pk):
+    sale= Sale.objects.get(id=pk)
+    return render(request, 'happy_hoeapp/sale_detail.html', {'sale': sale})
+
+
+# view foe seeing all the credit sales
+@login_required
+def all_credit_sales(request):
+    credit_sales = CreditSale.objects.all().order_by('-due_date')
+    
+    context = {
+        'credit_sales': credit_sales,
+        'title': 'Credit Sales'
+    }
+    return render(request, 'happy_hoeapp/credit_sales.html', context)
+
+# view for adding a credit sale
+@login_required
+def create_credit_sale(request, sale_id):
+    # Get the existing sale
+    sale = get_object_or_404(Sale, id=sale_id)
+    
+    # Check if this sale is already a credit sale
+    if hasattr(sale, 'credit_details'):
+        messages.warning(request, 'This sale already has a credit record!')
+        return redirect('credit_sales')
+    
+    # Update the sale payment method to 'Credit'
+    sale.payment_method = 'Credit'
+    sale.payment_status = 'PENDING'
+    sale.save()
+    
+    if request.method == 'POST':
+        form = CreditSaleForm(request.POST)
+        if form.is_valid():
+            credit_sale = form.save(commit=False)
+            credit_sale.sale = sale
+            
+            # Calculate balance
+            credit_sale.balance = sale.total_sale() - credit_sale.amount_paid
+            
+            # Set status based on balance
+            if credit_sale.balance <= 0:
+                credit_sale.status = 'PAID'
+            elif credit_sale.due_date < timezone.now().date():
+                credit_sale.status = 'OVERDUE'
+            else:
+                credit_sale.status = 'PENDING'
+                
+            credit_sale.save()
+            
+            messages.success(request, 'Credit sale added successfully!')
+            return redirect('credit_sales')
+    else:
+        # Pre-fill the form with customer info if available
+        initial_data = {}
+        if sale.customer_name:
+            initial_data['customer_name'] = sale.customer_name
+        
+        form = CreditSaleForm(initial=initial_data)
+    
+    context = {
+        'form': form,
+        'sale': sale
+    }
+    
+    return render(request, 'happy_hoeapp/create_credit_sale.html', context)# Edit existing CreditSale
+
+# view for editing the credit sale
+@login_required
+def update_credit_sale(request, pk):
+    credit_sale = get_object_or_404(CreditSale, pk=pk)
+    
+    if request.method == 'POST':
+        form = UpdateCreditSaleForm(request.POST, instance=credit_sale)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Credit sale for {credit_sale.customer_name} updated successfully!')
+            return redirect('credit_sales')
+    else:
+        form = UpdateCreditSaleForm(instance=credit_sale)
+    
+    context = {
+        'form': form,
+        'credit_sale': credit_sale
+    }
+    
+    return render(request, 'happy_hoeapp/edit_credit_sale.html', context)
+
+@login_required
+def credit_sale_detail(request, pk):
+    credit_sale = get_object_or_404(CreditSale, pk=pk)
+    return render(request, 'happy_hoeapp/credit_sale_detail.html', {
+        'credit_sale': credit_sale
+    })
+
+
+# a view for deleting a aparticular sale
+@login_required
 def delete_sale(request, pk):
     sale = get_object_or_404(Sale, id=pk)
     
@@ -479,14 +610,108 @@ def delete_sale(request, pk):
         
     return render(request, 'happy_hoeapp/delete_sale.html', {'sale': sale})
 
-def add_fullstock(request):
-    
-        
-    return render(request, "add.html")
 
+
+
+# view for logout
+@login_required
 def Logout(request):
     return render(request, 'happy_hoeapp/logout.html')
     
 
 def base3 (request):
     return render(request, 'happy_hoeapp/base3.html')
+
+@login_required
+def user_profile(request, user_id):
+    # Ensure users can only view their own profile unless they're director/manager
+    if request.user.id != user_id and not (request.user.is_director or request.user.is_manager):
+        messages.error(request, "You can only view your own profile")
+        return redirect('home')
+        
+    user = get_object_or_404(Userprofile, id=user_id)
+    context = {
+        'profile': user,
+        'title': f'Profile - {user.get_full_name() or user.username}'
+    }
+    return render(request, 'happy_hoeapp/profile.html', context)
+
+
+
+
+@login_required
+def search_stock(request):
+    query = request.GET.get('q', '')
+    if query:
+        stocks = Stock.objects.filter(
+            Q(product_name__icontains=query) |
+            Q(category__name__icontains=query) |
+            Q(branch__branch_name__icontains=query)
+        )
+    else:
+        stocks = Stock.objects.all()
+    
+    if not request.user.is_director and not request.user.is_manager:
+        stocks = stocks.filter(branch=request.user.branch)
+        context = {
+        'stocks': stocks,
+        'query': query,
+        'title': 'Search '
+    }
+    return render(request, 'happy_hoeapp/stock_list.html', context)
+
+@login_required
+def search_sales(request):
+    query = request.GET.get('q', '')
+    if query:
+        sales = Sale.objects.filter(
+            Q(product_name__icontains=query) |
+            Q(customer_name__icontains=query) |
+            Q(payment_method__icontains=query) |
+            Q(branch__branch_name__icontains=query) |
+            Q(date__icontains=query)
+        )                                  
+    else:
+        sales = Sale.objects.all()
+    
+    if not request.user.is_director and not request.user.is_manager:
+        sales = sales.filter(branch=request.user.branch)
+        
+    context = {
+        'sales': sales,
+        'query': query,
+        'title': 'Search Sales'
+    }
+    return render(request, 'happy_hoeapp/sales_list.html', context)
+
+@login_required
+def search(request):
+    query = request.GET.get('q', '')
+    search_type = request.GET.get('type', 'stock')
+    
+    if search_type == 'stock':
+        items = Stock.objects.filter(
+            Q(product_name__icontains=query) |
+            Q(category__name__icontains=query) |
+            Q(branch__branch_name__icontains=query)
+        ) if query else Stock.objects.all()
+        template = 'happy_hoeapp/stock_list.html'
+    else:
+        items = Sale.objects.filter(
+            Q(product_name__icontains=query) |
+            Q(customer_name__icontains=query) |
+            Q(payment_method__icontains=query) |
+            Q(branch__branch_name__icontains=query)
+        ) if query else Sale.objects.all()
+        template = 'happy_hoeapp/sales_list.html'
+    
+    if not request.user.is_director and not request.user.is_manager:
+        items = items.filter(branch=request.user.branch)
+    
+    context = {
+        'query': query,
+        'items': items,
+        'search_type': search_type,
+        'title': f'Search {search_type.title()}'
+    }
+    return render(request, template, context)

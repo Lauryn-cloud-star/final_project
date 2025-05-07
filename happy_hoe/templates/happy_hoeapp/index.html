@@ -40,11 +40,12 @@
             <!-- <h1>Welcome to {{ site_name }}</h1> -->
             <!-- <p>This is a Django dynamic app</p> -->
             {% if user.is_authenticated %}
-                <h1 class="text-2xl">Welcome, {{ user.username }}!</h1>
+                <h1 class="text-2xl"><strong>Welcome, {{ user.username }}!</strong></h1>
+
             {% else %}
                 <p>Please log in</p>
             {% endif %}
-            <p class="text-2xl ">Below is a table containig the current stock</p>
+            <p class="text-2xl "> Current stock</p>
             <ul>
                 {% for item in products %}
                 <li>{{ item }}</li>
@@ -57,9 +58,11 @@
                         <th scope="col">#</th>
                         <th scope="col">Category Name</th>
                         <th scope="col">Product Name</th>
-                        <th scope="col">Quantity</th>
+                        <th scope="col">Toonage in Kgs</th>
                         <th scope="col">Unit Price</th>
+                        {% if user.is_manager  %}
                         <th scope="col">Status</th>
+                        {% endif %}
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -71,6 +74,7 @@
                         <td>{{ stock.product_name }}</td>
                         <td>{{ stock.total_quantity }}</td>
                         <td>{{ stock.unit_price }}</td>
+                        {% if user.is_manager  %}
                         <td>
                             {% if stock.total_quantity <= 300 %}
                             <span class="badge danger"> Out of Stock</span>
@@ -81,9 +85,11 @@
                             <span class="badge premium">Well Stocked</span>
                         {% endif %}
                         </td>
+                        {% endif %}
                         <td class="d-flex gap-2">
                         
                             <a href="{% url 'stock_detail' stock.id %}"><input type="submit" value="Checkout item" class="rounded-full py-2 px-4"></a>
+                            
                         </td>
 
                     </tr>

@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='stock',
-            name='branch_name',
-            field=models.CharField(default='Maganjo', max_length=20, verbose_name=(('Maganjo', 'Maganjo'), ('Matugga', 'Matugga'))),
+            name='new_field',
+            field=models.CharField(max_length=200,null=True, blank=True ),
         ),
     ]

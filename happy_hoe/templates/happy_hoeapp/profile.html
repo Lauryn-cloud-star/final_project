@@ -1,0 +1,65 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-lg" id="glass-effect">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-circle fa-5x mb-3 text-white"></i>
+                    <h4 class="text-white">{{ profile.get_full_name }}</h4>
+                    <p class="text-white-50">{{ profile.get_role }}</p>
+                    <p class="text-white-50">{{ profile.branch.branch_name }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow-lg" id="glass-effect">
+                <div class="card-body">
+                    <h5 class="text-white mb-4">Profile Information</h5>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <p class="text-white-50">Username:</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-white">{{ profile.username }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <p class="text-white-50">Email:</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-white">{{ profile.email }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <p class="text-white-50">Phone:</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-white">{{ profile.phone }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <p class="text-white-50">Address:</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-white">{{ profile.address|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

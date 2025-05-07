@@ -1,0 +1,45 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Credit Sale Details</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="card-title">Customer Information</h5>
+                    <p><strong>Name:</strong> {{ credit_sale.customer_name }}</p>
+                    <p><strong>National ID:</strong> {{ credit_sale.national_id|default:"Not provided" }}</p>
+                    <p><strong>Contact:</strong> {{ credit_sale.contact|default:"Not provided" }}</p>
+                    <p><strong>Location:</strong> {{ credit_sale.location }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="card-title">Sale Information</h5>
+                    <p><strong>Product:</strong> {{ credit_sale.sale.product_name }}</p>
+                    <p><strong>Total Amount:</strong> UGX {{ credit_sale.sale.total_sale }}</p>
+                    <p><strong>Amount Paid:</strong> UGX {{ credit_sale.amount_paid }}</p>
+                    <p><strong>Balance:</strong> <span class="{% if credit_sale.balance > 0 %}text-danger{% else %}text-success{% endif %}">UGX {{ credit_sale.balance }}</span></p>
+                    <p><strong>Due Date:</strong> {{ credit_sale.due_date|date:"M d, Y" }}</p>
+                    <p><strong>Status:</strong> 
+                        <span class="badge {% if credit_sale.status == 'PAID' %}bg-success
+                            {% elif credit_sale.status == 'OVERDUE' %}bg-danger
+                            {% else %}bg-warning{% endif %}">
+                            {{ credit_sale.status }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'update_credit_sale' credit_sale.id %}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Update Payment
+                </a>
+                <a href="{% url 'credit_sales' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Credit Sales
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

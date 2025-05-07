@@ -27,7 +27,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg glass-navbar fixed-top shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand text-white" href="#">Karibu Grocerries LTD</a>
+            
+            <strong><h2 class="text-white text-center ml-5"> Karibu Groceries LTD {{ user.branch.branch_name }} branch</h2></strong>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -36,6 +37,7 @@
                 <li class="nav-item">
                 <a class="nav-link text-white" href="/home/">Home</a>
                 </li>
+                
                 <li class="nav-item">
                 <a class="nav-link text-white" href="/home/">Stock</a>
                 </li>
@@ -43,14 +45,23 @@
                 <a class="nav-link text-white" href="/sales/">Sales</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link text-white" href="#">Users</a>
+                    <a class="" href="{% url 'user_profile' request.user.id %}"><li><i class="fas fa-user-circle"></i> Account</li></a>
                 </li>
             </ul>
             </div>
         </div>
     </nav>
 
-<!-- Content -->
+<!-- main content -->
+<div class="messages-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} fade show" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
 <div class="container-fluid pt-2">
         
     {% block content %}
@@ -66,6 +77,63 @@
         
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Enhanced form validation
+    (function () {
+        'use strict'
+        
+        // Fetch all forms that need validation
+        const forms = document.querySelectorAll('.needs-validation')
+        
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    
+                    // Find all invalid fields
+                    const invalidFields = form.querySelectorAll(':invalid')
+                    if (invalidFields.length > 0) {
+                        // Focus the first invalid field
+                        invalidFields[0].focus()
+                    }
+                }
+                
+                form.classList.add('was-validated')
+            }, false)
+            
+            // Add real-time validation feedback
+            const inputs = form.querySelectorAll('input, select, textarea')
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (!input.checkValidity()) {
+                        input.classList.add('is-invalid')
+                    } else {
+                        input.classList.remove('is-invalid')
+                        input.classList.add('is-valid')
+                    }
+                })
+            })
+        })
+    })()
+        // Auto dismiss messages after 4 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(function(message) {
+                // Add fade out effect
+                message.style.transition = 'opacity 0.5s ease-in-out';
+                message.style.opacity = '0';
+                // Remove message after fade
+                setTimeout(function() {
+                    message.remove();
+                }, 500);
+            });
+        }, 4000); // 4 seconds
+    });
+
+</script>
 </body>
 </html>
 

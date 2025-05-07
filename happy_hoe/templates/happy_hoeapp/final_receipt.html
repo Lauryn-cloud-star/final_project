@@ -1,38 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="Description" content="Enter your description here"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/style.css">
-  {% block title %}<title>Receipt</title>{% endblock %}
-</head>
-<body style="background-image: url('/static/images/f1.webp'); background-position: center; background-size: cover; overflow-y: hidden;">
-    <nav>
-        <a href="#">LauraFoods</a>
-        <ul class="list">
-          <li><a href="/home/">Home</a></li>
-          <li><a href="/all_stock/">Stock</a></li>
-          <li><a href="/sales/">Sales</a></li>
-          <li><a href="#">Users</a></li>
-        </ul>
-        <button class="search">Search</button>
-        <button class="menu">Menu</button>
-    </nav>
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
 
-    <div class="receipt-container">
+
+ {% block title %}Receipt{% endblock %}
+ {% block extra_css %}
+ 
+ <style>
+    .receipt-container {
+    max-width: 300px  !important; ;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+    padding-bottom: 10px;
+}
+
+.receipt-body {
+    margin-bottom: 20px;
+}
+
+.receipt-table {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.receipt-table th,
+.receipt-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.receipt-footer {
+    text-align: center;
+    border-top: 1px dashed rgba(255, 255, 255, 0.3);
+    padding-top: 10px;
+}
+
+@media print {
+    .receipt-container {
+        width: 80mm; /* Standard receipt width */
+        margin: 0;
+        padding: 10px;
+        background: white;
+        color: black;
+        box-shadow: none;
+    }
+
+    .no-print {
+        display: none;
+    }
+
+    @page {
+        margin: 0;
+        size: 80mm 297mm; /* Standard receipt paper size */
+    }
+}
+ </style>
+ 
+{% endblock %}
+
+
+
+    <div class="receipt-container w-[400px]" style=" width: 350px;
+    margin: 10px auto;
+    padding: 5px;
+    background: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 12px;">
         {% block content %}
         
-                <div class="flex flex-col bg-light p-5 my-5 rounded-lg" id="receipt">
+                <div class="flex flex-col bg-light p-5 my-5 rounded-lg" id="receipt" style="
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;" id="receipt">
+                    <h3 class="font-semibold text-black">Karibu Groceries</h3>
                     <h1 class="text-2xl font-bold text-gray-800 text-center">Receipt</h1>
                     <p class="text-sm text-gray-600 text-center">Thank you for your purchase!</p>
                     <div class="flex flex-col items-center gap-2">
-                        <h3 class="font-semibold">Karibu Groceries</h3>
-                        <p class="text-xs">Maganjjo</p>
+                        <h3 class="font-semibold text-black">Karibu Groceries</h3>
+                        <p class="text-xs">{{ sale.branch.branch_name }}</p>
                     </div>
                     <div class="flex flex-col gap-3 border-b py-4 text-xs">
                         <!-- Improved Item Layout -->
@@ -90,6 +147,13 @@
                                 <span>{{ receipt.get_change }}</span>
                             </p>
                         </div>
+                        <div>
+                           
+                            <p class="flex justify-between">
+                                <span class="text-gray-400">Status:</span>
+                                <span>{{ receipt.status }}</span>
+                            </p>
+                        </div>
                         <!-- <a href="/all_sales/" class="text-blue-500 hover:underline">View all sales</a> -->
                         
                         <div class="border-b my-2"></div>
@@ -103,7 +167,3 @@
             
         {% endblock %}
     </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
-</body>
-</html>

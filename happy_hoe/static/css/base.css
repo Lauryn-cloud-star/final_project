@@ -21,8 +21,8 @@ body::before {
   z-index: -1; /* Ensure it's behind other content */
 }
 .logo {
-    width: 80px; /* You can adjust the size */
-    height: auto; /* Keep the aspect ratio */
+    width: 200px; 
+    height: 50px; /* Keep the aspect ratio */
     object-fit: contain; /* Make sure it fits nicely */
 }
 /* Ensure the main content area grows to fill available space */
@@ -32,16 +32,42 @@ body::before {
     flex-direction: column; /* Optional */
 }
 .sidebar {
-  width: 180px; /* Reduced width */
-  height: 800px;
-  background-color: #1E2B32;
-  border-radius: 10px;
-  margin-left: 0; /* Remove margin on the left */
+    width: 190px;
+    height: 800px;
+    background-color: #1E2B32;
+    border-radius: 10px;
+    margin-left: 0; 
+    position: fixed;
+    top: 60px; 
+    left: 0;
+    height: calc(100vh - 60px);
+    width: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 0.5rem;
+}
+
+.col-md-10 {
+  margin-left: 200px;
+  width: calc(100% - 200px);
 }
 
 .sidebar-fix {
   margin-left: 0 !important;
   padding-left: 0 !important;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
 }
 
 .nav-heading {
@@ -60,23 +86,28 @@ body::before {
   background: rgba(0, 0, 0, 0.8);
 }
 
-.welcome-text {
-  position: absolute;
-  margin-left: 100px;
+.welcome-message {
+  position: relative;
   left: 50%;
   transform: translateX(-50%);
+ 
+}
+
+.welcome-message h2 {
+  font-size: 1.5rem;
+  margin-left: 100px;
   white-space: nowrap;
 }
 
-.logo {
-  height: 40px;
-  width: auto;
-}
-
-.user-settings {
+.header-controls {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 5rem;
+}
+
+.logo-container {
+  width: 150px;
+  height: 50px
 }
 
 .content-container{
@@ -230,9 +261,9 @@ li:hover{
     position: relative; 
     margin-right: 20px;
     display: flex;
-    justify-content: flex-end; /* Aligns content to the right */
+    justify-content: flex; /* Aligns content to the right */
     align-items: center; /* Aligns content vertically */
-    width: 100%; /* Ensures the container uses full width */
+    width: 200px; /* Ensures the container uses full width */
 }
   
 
@@ -343,4 +374,88 @@ border: 1px solid rgba(85, 82, 82, 1);
 .alert-error {
   background: rgba(220, 53, 69, 0.9);
   color: white;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 5px 15px;
+}
+
+.search-container input,
+.search-container select {
+  background: transparent;
+  border: none;
+  color: white;
+}
+
+.search-container input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.search-container button {
+  border: none;
+  background: transparent;
+  color: white;
+}
+
+.receipt-container {
+  max-width: 300px !important; ;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+  padding-bottom: 10px;
+}
+
+.receipt-body {
+  margin-bottom: 20px;
+}
+
+.receipt-table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.receipt-table th,
+.receipt-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.receipt-footer {
+  text-align: center;
+  border-top: 1px dashed rgba(255, 255, 255, 0.3);
+  padding-top: 10px;
+}
+
+@media print {
+  .receipt-container {
+      width: 80mm; /* Standard receipt width */
+      margin: 0;
+      padding: 10px;
+      background: white;
+      color: black;
+      box-shadow: none;
+  }
+
+  .no-print {
+      display: none;
+  }
+
+  @page {
+      margin: 0;
+      size: 80mm 297mm; /* Standard receipt paper size */
+  }
 }

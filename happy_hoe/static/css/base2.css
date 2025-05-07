@@ -118,7 +118,7 @@ body {
 }
 
 footer {
-  position: relative; /* Change to fixed if you want it always visible */
+  position: fixed; /* Change to fixed if you want it always visible */
   bottom: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.7); /* Keeping original styles */
@@ -126,3 +126,45 @@ footer {
   padding: 2em 0; /* Adjust padding as needed */
 }
 
+.receipt-container {
+  max-width: 80mm;  /* Standard receipt width */
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  color: black;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #000;
+  padding-bottom: 10px;
+  color: black;
+}
+
+.receipt-body {
+  margin-bottom: 20px;
+  color: black;
+}
+
+.receipt-table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.receipt-table th,
+.receipt-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  color: black;
+}
+
+.receipt-footer {
+  text-align: center;
+  border-top: 1px dashed #000;
+  padding-top: 10px;
+  color: black;
+}

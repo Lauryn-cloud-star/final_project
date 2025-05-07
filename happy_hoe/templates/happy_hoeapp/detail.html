@@ -10,15 +10,15 @@
 
 {% block content  %}
     <div class="container2 container-fluid p-3 flex-grow-1">
-        <div class="branch-header">
-            <h2>{{ stock.branch.branch_name }} Branch</h2>
-        </div>
+        
         <div class=" conatainer p-2 mt- 5 gap-4">
             {% if user.branch == stock.branch %}
             <a href="{% url 'issue_item' stock.id %}"><input type="submit" value="Sell item" class="rounded-full py-2 px-4"></a>
+            {% if user.is_manager   %}
             <a href="{% url 'add_stock' stock.id %} "><input type="submit" value="Add item" class="btn btn-success btn-rounded btn-gradient"></a>
             <a href="{% url 'edit_stock' stock.id %} "><input type="submit" value="Edit item" class="rounded-full py-2 px-4"></a>
             <a href="{% url 'delete_stock' stock.id %}"><input type="submit" value="Delete item"  class="btn btn-danger text-white" ></a>
+            {% endif %}
             {% endif %}
         </div>
         <div class="tableglass-effect">
@@ -36,7 +36,7 @@
                         <td>{{ stock.Category_name }}</td>
                         <td>{{ stock.product_name }}</td>
                         <td>{{ stock.total_quantity }}</td>
-                        <td>{{ stock.cost_of_stock }}</td>
+                        <td>{{ stock.unit_price }}</td>
                     </tr>
                 </tbody>
             </table>

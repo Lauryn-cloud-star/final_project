@@ -15,6 +15,8 @@
                     <th scope="col">Date</th>
                     <th scope="col">Details</th>
                     <th scope="col">Receipt</th>
+                    <th scope="col">Action</th>
+                    
                 </tr>
                 
                 <!-- <tr scope="col">Sales agent</tr> -->
@@ -38,6 +40,13 @@
                         <a href="{% url 'receipt_detail' sale.id %}" class=" px-4 w-5px fas fa-receipt" style="color: brown;">
                             <input type="button" value="" >
                         </a>
+                    </td>
+                    <td>
+                        {% if sale.payment_method != 'Cash' %}
+                        <a href="{% url 'create_credit_sale' sale.id %}" class="btn btn-sm btn-info">
+                            <i class="fas fa-credit-card"></i> Convert to Credit
+                        </a>
+                        {% endif %}
                     </td>
                 
                 </tr>
