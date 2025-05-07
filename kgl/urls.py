@@ -62,12 +62,16 @@ urlpatterns = [
      path('users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
     path('branch/add/', views.add_branch, name='add_branch'),
     path('users/<int:pk>/edit/', views.edit_user, name='edit_user'),
-    
+    path('branch/', views.all_branches, name='branches'),
     path('credit_sales/', views.all_credit_sales, name='credit_sales'),
     path('create_credit_sale/<int:sale_id>/', views.create_credit_sale, name='create_credit_sale'),
     path('update_credit_sale/<int:pk>/', views.update_credit_sale, name='update_credit_sale'),
     path('credit_sale_detail/<int:pk>/', views.credit_sale_detail, name='credit_sale_detail'),
     path('profile/<int:user_id>/', views.user_profile, name='user_profile'),
     path('search/', views.search, name='search'),
-    
+
+    path('branches/', views.branch_list, name='branch_list'),
+    path('branch/<int:branch_id>/manager/', views.manager, name='manager'),
 ]
+    
+

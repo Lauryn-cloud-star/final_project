@@ -19,7 +19,7 @@
         {% if user.is_authenticated %}
         <img src="{% static 'images/straight.png' %}" alt="Logo" class="logo" /> 
     
-        <strong><h2 class="text-white text-center ml-3 display-6">Welcome to  Karibu Groceries LTD  {% if user.is_manager or user.is_salesagent %} {{ user.branch.branch_name }} branch  {% endif %}</h2></strong>
+        <strong><h2 class="text-white text-center ml-3 display-7">Welcome to  Karibu Groceries LTD  {% if user.is_manager or user.is_salesagent %} {{ user.branch.branch_name }} branch  {% endif %}</h2></strong>
         
         <div class="search-container">
             <form method="GET" action="{% url 'search' %}" class="d-flex">
@@ -56,8 +56,13 @@
                         <nav class="navbar ">
                             <div class="container-fluid">
                                 <ul>
+                                    {% if user.is_director %}
+                                    <a class="" href="/branches/"><li><i class="fas fa-network-wired"></i> Branches</li></a>
+                                    {% endif %}
+
                                     {% if user.is_director  or user.is_manager %}
                                     <a class="" href="/owner_dashboard/"><li><i class="fas fa-home"></i> Dashboard</li></a>
+                                    
                                     {% elif user.is_salesagent  %}
                                     <a class="" href="/owner_dashboard/"><li><i class="fas fa-home"></i> Dashboard</li></a>
                                     {% endif %}

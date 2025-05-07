@@ -8,10 +8,10 @@ from django.core.cache import cache
 from django.core.validators import RegexValidator
 # Create your models here.
 class Branch(models.Model):
-    branch_name= models.CharField(max_length=20, default="", blank=False, null=False)
-    email = models.EmailField(max_length=100, unique=False)
-    phone_number = models.CharField(max_length=15, blank=False, unique=False)
-    location = models.CharField(max_length=50, default="", blank=False, null=False)
+    branch_name= models.CharField(max_length=20, default="", blank=True, null=True)
+    email = models.EmailField(max_length=100, unique=True)
+    phone_number = models.CharField(max_length=15, blank=True, unique=True)
+    location = models.CharField(max_length=50, default="", blank=True, null=True)
 
     # Get all stock items for this branch
     def get_branch_stock(self):
@@ -34,10 +34,10 @@ class Branch(models.Model):
 
 
     def get_manager(self):
-        return self.userprofile_set.filter(is_manager=False).first()
+        return self.userprofile_set.filter(is_manager=True).first()
 
     def get_sales_agents(self):
-        return self.userprofile_set.filter(is_salesagent=False)
+        return self.userprofile_set.filter(is_salesagent=True)
 
    
     def __str__(self):
@@ -48,11 +48,11 @@ class Branch(models.Model):
 
 
 class Userprofile(AbstractUser):
-    is_salesagent = models.BooleanField(null=False, default=False)
-    is_manager = models.BooleanField(null=False, default=False)
-    is_director = models.BooleanField(null=False, default=False)
-    last_activity = models.DateTimeField(null=False, blank=False)
-    is_online = models.BooleanField(default=False)
+    is_salesagent = models.BooleanField(null=True, default=True)
+    is_manager = models.BooleanField(null=True, default=True)
+    is_director = models.BooleanField(null=True, default=True)
+    last_activity = models.DateTimeField(null=True, blank=True)
+    is_online = models.BooleanField(default=True)
     status = models.CharField(
         max_length=20,
         choices=(
@@ -62,14 +62,14 @@ class Userprofile(AbstractUser):
         ),
         default='offline'
     )
-    username = models.CharField(max_length=50, unique=True, blank=False)
+    username = models.CharField(max_length=50, unique=True, blank=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE,max_length=20, blank=True, null=True ,default=1)
-    email = models.EmailField(max_length=100, unique=False)
+    email = models.EmailField(max_length=100, unique=True)
     gender_choices = (('Female','Female'), ('Male','Male'))
-    gender = models.CharField(max_length=10, blank=False, choices=gender_choices)
-    phone = models.CharField(max_length=10, unique=False)
-    address = models.CharField(max_length=100, blank=False)
-    status = models
+    gender = models.CharField(max_length=10, blank=True, choices=gender_choices)
+    phone = models.CharField(max_length=10, unique=True)
+    address = models.CharField(max_length=100, blank=True)
+   
 
     def get_role(self):
         if self.is_director:
@@ -84,10 +84,10 @@ class Userprofile(AbstractUser):
         now = timezone.now()
         # Consider user offline if last activity was more than 5 minutes ago
         if (now - self.last_activity).seconds > 300:
-            self.is_online = False
+            self.is_online = True
             self.status = 'offline'
         else:
-            self.is_online = False
+            self.is_online = True
             self.status = 'online'
         self.save()
    
@@ -106,19 +106,19 @@ class Userprofile(AbstractUser):
 
 # getting the category for the particular stcock
 class Category(models.Model):
-    category_name=models.CharField(max_length=50, null=False, blank=False, default='')
-    description=models.TextField(max_length=50, blank=False, default='')
+    category_name=models.CharField(max_length=50, null=True, blank=True, default='')
+    description=models.TextField(max_length=50, blank=True, default='')
     def __str__(self):
         return self.category_name
 
 class Produce(models.Model):
-    branch= models.ForeignKey(Branch, on_delete=models.CASCADE,blank=False, null=False)
-    product_name = models.CharField(max_length=20, blank=False, unique=False)
-    product_price = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
-    product_description = models.TextField(blank=False)
-    product_image = models.ImageField(upload_to='product_images', blank=False)
-    product_category = models.CharField(max_length=100, blank=False)
-    product_stock = models.IntegerField(blank=False)
+    branch= models.ForeignKey(Branch, on_delete=models.CASCADE,blank=True, null=True)
+    product_name = models.CharField(max_length=20, blank=True, unique=True)
+    product_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+    product_description = models.TextField(blank=True)
+    product_image = models.ImageField(upload_to='product_images', blank=True)
+    product_category = models.CharField(max_length=100, blank=True)
+    product_stock = models.IntegerField(blank=True)
 
     def __str__(self):
         return self.product_name
@@ -132,10 +132,10 @@ class Produce(models.Model):
 
 
 class Stock(models.Model):
-    # user_id=models.ForeignKey(Userprofile, on_delete=models.SET_NULL, null=False)
+    # user_id=models.ForeignKey(Userprofile, on_delete=models.SET_NULL, null=True)
     
-    branch= models.ForeignKey(Branch, on_delete=models.CASCADE,  related_name='branch_stock', null=False, blank=False)
-    Category_name= models.ForeignKey (Category, on_delete=models.CASCADE, blank=False)
+    branch= models.ForeignKey(Branch, on_delete=models.CASCADE,  related_name='branch_stock', null=True, blank=True)
+    Category_name= models.ForeignKey (Category, on_delete=models.CASCADE, blank=True)
     product_choices=(
         ('beans', 'beans'),
         ('soybeans', 'soybeans'),
@@ -143,22 +143,22 @@ class Stock(models.Model):
         ('maize', 'maize'),
         ('cowpeas', 'cowpeas'),
     )
-    product_name = models.CharField(max_length=50, null=False, blank=False, choices=product_choices)
-    total_quantity= models.PositiveIntegerField( default=0, blank=False, null=False)
-    issued_quantity= models.PositiveIntegerField(default=0, blank=False, null=False)
-    received_quantity= models.PositiveIntegerField( default=0, blank=False, null=False)
-    cost_of_stock= models.DecimalField(max_digits=50, blank=False, null=False, default=1000000, decimal_places=0)
-    unit_cost= models.IntegerField(blank=False, null=False, default=500)
-    unit_price= models.IntegerField(blank=False, null=False, default=500)  
-    date_of_stock= models.DateField(auto_now_add=False ,blank=False, null=False)
-    supplier_name= models.CharField(max_length=100, blank=False, null=False)
+    product_name = models.CharField(max_length=50, null=True, blank=True, choices=product_choices)
+    total_quantity= models.PositiveIntegerField( default=0, blank=True, null=True)
+    issued_quantity= models.PositiveIntegerField(default=0, blank=True, null=True)
+    received_quantity= models.PositiveIntegerField( default=0, blank=True, null=True)
+    cost_of_stock= models.DecimalField(max_digits=50, blank=True, null=True, default=1000000, decimal_places=0)
+    unit_cost= models.IntegerField(blank=True, null=True, default=500)
+    unit_price= models.IntegerField(blank=True, null=True, default=500)  
+    date_of_stock= models.DateField(auto_now_add=True ,blank=True, null=True)
+    supplier_name= models.CharField(max_length=100, blank=True, null=True)
     phone_regex = RegexValidator(
         regex=r'^\+?256[0-9]{9,15}$',
         message="Phone number must be in the format: '+2567XXXXXXXX'.")
-    supplier_contact = models.CharField(max_length=15, validators=[phone_regex], blank=False, null=False)
+    supplier_contact = models.CharField(max_length=15, validators=[phone_regex], blank=True, null=True)
     
-    type_of_produce = models.CharField(max_length=100, blank=False, null=False)
-    entry_agent= models.ForeignKey(Userprofile, on_delete=models.CASCADE, null=False, blank=False, related_name='stocks_entered')
+    type_of_produce = models.CharField(max_length=100, blank=True, null=True)
+    entry_agent= models.ForeignKey(Userprofile, on_delete=models.CASCADE, null=True, blank=True, related_name='stocks_entered')
     
 
     def __str__(self):
@@ -172,20 +172,20 @@ class Stock(models.Model):
 
 
 class Sale(models.Model):
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='branch_sales', null=False, blank=False)
-    product_name= models.ForeignKey(Stock, on_delete=models.CASCADE,max_length=100, blank=False, null=False)
-    unit_price= models.IntegerField( blank=False, null=False, default=1000)
-    quantity= models.IntegerField( blank=False, default=5, null=False)
-    customer_name= models.CharField(max_length=100, blank=False, null=False)
-    date= models.DateField(auto_now_add=False, blank=False, null=False)
-    amount_received= models.IntegerField( blank=False, default=1500, null=False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='branch_sales', null=True, blank=True)
+    product_name= models.ForeignKey(Stock, on_delete=models.CASCADE,max_length=100, blank=True, null=True)
+    unit_price= models.IntegerField( blank=True, null=True, default=1000)
+    quantity= models.IntegerField( blank=True, default=5, null=True)
+    customer_name= models.CharField(max_length=100, blank=True, null=True)
+    date= models.DateField(auto_now_add=True, blank=True, null=True)
+    amount_received= models.IntegerField( blank=True, default=1500, null=True)
     payment_method_choices=(
         ('Cash', 'Cash'),
         ('Credit', 'Credit'),
         ('Mobile Money', 'Mobile Money'),
         
     )
-    payment_method= models.CharField(max_length=50, choices=payment_method_choices, blank=False, null=False)
+    payment_method= models.CharField(max_length=50, choices=payment_method_choices, blank=True, null=True)
     payment_status = models.CharField(
         max_length=20,
         choices=[
@@ -195,7 +195,7 @@ class Sale(models.Model):
         ],
         default='PAID'
     )
-    sales_agent= models.ForeignKey(Userprofile,on_delete=models.CASCADE, blank=False)
+    sales_agent= models.ForeignKey(Userprofile,on_delete=models.CASCADE, blank=True)
 
    
     def total_sale(self):
@@ -240,18 +240,18 @@ class Sale(models.Model):
 
 # Model for Credit Sale
 class CreditSale(models.Model):
-    sale = models.OneToOneField(Sale, on_delete=models.CASCADE, related_name='credit_details', null=False, blank=False)
+    sale = models.OneToOneField(Sale, on_delete=models.CASCADE, related_name='credit_details', null=True, blank=True)
     
     customer_name = models.CharField(max_length=100)
-    national_id = models.CharField(max_length=20, blank=False, null=False)
+    national_id = models.CharField(max_length=20, blank=True, null=True)
     phone_regex = RegexValidator(
         regex=r'^\+?256[0-9]{9,15}$',
         message="Phone number must be in the format: '+2567XXXXXXXX'.")
-    contact = models.CharField(max_length=15, validators=[phone_regex], blank=False, null=False)
+    contact = models.CharField(max_length=15, validators=[phone_regex], blank=True, null=True)
     location = models.CharField(max_length=100)
     due_date = models.DateField()
     amount_paid = models.IntegerField(max_length=10, default=10000)
-    balance = models.IntegerField(max_length=10, null=False, blank=False, default=0)
+    balance = models.IntegerField(max_length=10, null=True, blank=True, default=0)
     status = models.CharField(
         max_length=20,
         choices=[
@@ -270,30 +270,3 @@ class CreditSale(models.Model):
             raise ValidationError("Amount paid cannot exceed total sale amount")
         self.balance = self.sale.total_sale() - self.amount_paid
 
-from django.db import migrations
-
-def fix_user_data(apps, schema_editor):
-    Userprofile = apps.get_model('happy_hoe', 'Userprofile')
-    
-    # Set branch to null for directors
-    Userprofile.objects.filter(is_director=True).update(branch=None)
-    
-    # Ensure managers have unique branches
-    for branch in apps.get_model('happy_hoe', 'Branch').objects.all():
-        managers = Userprofile.objects.filter(branch=branch, is_manager=True)
-        if managers.count() > 1:
-            # Keep the first manager, remove manager status from others
-            first_manager = managers.first()
-            managers.exclude(pk=first_manager.pk).update(is_manager=False)
-
-def reverse_fix(apps, schema_editor):
-    pass
-
-class Migration(migrations.Migration):
-    dependencies = [
-        ('happy_hoe', 'XXXX_fix_userprofile_status'),  # Replace XXXX with actual number
-    ]
-
-    operations = [
-        migrations.RunPython(fix_user_data, reverse_fix),
-    ]

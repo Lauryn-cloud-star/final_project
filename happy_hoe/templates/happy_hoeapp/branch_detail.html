@@ -1,0 +1,46 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <h2 class="text-white mb-4">Branch Overview</h2>
+    
+    <div class="row">
+        {% for branch in branches %}
+        <div class="col-md-4 mb-4">
+            <div class="card" >
+                <div class="card-body">
+                    <h4 class="card-title text-primary">{{ branch.branch_name }}</h4>
+                    <div class="branch-details mt-3">
+                        <p><i class="fas fa-map-marker-alt"></i> {{ branch.location }}</p>
+                        <p><i class="fas fa-envelope"></i> {{ branch.email }}</p>
+                        <p><i class="fas fa-phone"></i> {{ branch.phone_number }}</p>
+                        
+                        <div class="branch-stats mt-4">
+                            <div class="stat-item">
+                                <small class="text-muted">Total Stock</small>
+                                <h5>{{ branch.total_stock|intcomma }} Kgs</h5>
+                            </div>
+                            
+                        </div>
+
+                        {% if branch.manager %}
+                        <div class="manager-info mt-3">
+                            <small class="text-muted">Branch Manager</small>
+                            <p><i class="fas fa-user-tie"></i> {{ branch.manager.get_full_name }}</p>
+                        </div>
+                        {% endif %}
+                        <a href="/manager_dashboard" class="btn btn-primary mt-3">
+                            View Dashboard
+                        </a>
+                       
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

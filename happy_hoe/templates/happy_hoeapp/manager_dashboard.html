@@ -5,152 +5,225 @@
 <div class="container-fluid mt-4">
     <h2 class="text-white mb-4">{{ branch_name }} Branch Dashboard</h2>
 
-    <!-- Stats Cards -->
+    <!-- Stats Cards Row -->
     <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card" id="glass-effect">
+        <div class="col-md-3">
+            <div class="card" >
                 <div class="card-body">
                     <h5 class="card-title">Total Sales</h5>
                     <h2 class="card-text">{{ total_sales }}</h2>
+                    <p class="text-muted">{{ total_transactions }} transactions</p>
                     <i class="fas fa-chart-line card-icon"></i>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card" id="glass-effect">
+        <div class="col-md-3">
+            <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Total Stock</h5>
+                    <h5 class="card-title">Stock Level</h5>
                     <h2 class="card-text">{{ total_stock|intcomma }} Kgs</h2>
+                    <p class="text-muted">Current inventory</p>
                     <i class="fas fa-boxes card-icon"></i>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card" id="glass-effect">
+        <div class="col-md-3">
+            <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Credit Sales</h5>
-                    <h2 class="card-text">{{ total_credit_sales }}</h2>
+                    <h2 class="card-text">{{ total_credit_amount }}</h2>
+                    <p class="text-muted">{{ total_credit_sales }} pending</p>
                     <i class="fas fa-credit-card card-icon"></i>
                 </div>
             </div>
         </div>
+       
     </div>
 
     <!-- Charts Row -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card" id="glass-effect">
+            <div class="card" >
                 <div class="card-body">
                     <h5 class="card-title">Stock Distribution</h5>
                     <canvas id="stockChart"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card" id="glass-effect">
-                <div class="card-body">
-                    <h5 class="card-title">Sales Analysis</h5>
-                    <canvas id="salesChart"></canvas>
-                </div>
-            </div>
+       
+    </div>
+    <div class="products-section">
+        <h4>
+            All Products
+            <a href="/home/" class="view-all">View All</a>
+        </h4>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in stocks %}
+                    <tr>
+                        <td>{{ stock.product_name }}</td>
+                        <td>{{ stock.Category_name }}</td>
+                        <td>{{ stock.total_quantity }}</td>
+                        <td>UGX {{ stock.unit_price }}</td>
+                        <td>
+                            {% if stock.total_quantity <= 300 %}
+                                <span class="badge danger"> Out of Stock</span>
+                                {% elif stock.total_quantity < 700 %}
+                                <span class="badge warning">Soon out of stock</span>
+                          
+                            {% else %}
+                                <span class="badge premium">Well Stocked</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Low Stock Alerts -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card" id="glass-effect">
-                <div class="card-body">
-                    <h5 class="card-title">Low Stock Alerts</h5>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Current Stock</th>
-                                   
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in low_stock_items %}
-                                <tr>
-                                    <td>{{ item.product_name }}</td>
-                                    <td>{{ item.total_quantity|intcomma }} Kgs</td>
-                                    
-                                    <td>
-                                        <span class="badge bg-danger">Low Stock</span>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center">No low stock items</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </div>
 
-{% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const stockData = JSON.parse('{{ stock_data_json|escapejs }}');
-    const salesData = JSON.parse('{{ sales_data_json|escapejs }}');
+<style>
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .card-title {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .card-text {
+        color: #2c3e50;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+    .text-muted {
+        color: #6c757d !important;
+    }
+    
+    
+    .table-responsive {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 2rem;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    thead {
+        background-color: #f8f9fa;
+    }
+    
+    th {
+        color: #495057;
+        font-weight: 600;
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+        color: #333;
+    }
+    
+    tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    /* Badge Styles */
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+    
+    .badge.danger {
+        background-color: #ff6b6b;
+        color: white;
+    }
+    
+    .badge.warning {
+        background-color: #ffd93d;
+        color: #333;
+    }
+    
+    .badge.premium {
+        background-color: #51cf66;
+        color: white;
+    }
+    
+    /* Products Section Header */
+    .products-section h4 {
+        color: white;
+        margin: 2rem 0 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .view-all {
+        color: #fff;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .view-all:hover {
+        background: rgba(44, 7, 7, 0.2);
+        color: #fff;
+    }
+    
+    .card-icon {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+        font-size: 2.5rem;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
 
-    // Stock Chart
-    new Chart(document.getElementById('stockChart'), {
-        type: 'bar',
-        data: {
-            labels: stockData.map(item => item.product_name),
-            datasets: [{
-                label: 'Stock Quantity (Kgs)',
-                data: stockData.map(item => item.quantity),
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
+    /* Specific icon colors */
+    .fa-chart-line {
+        color: #4CAF50;  /* Green for sales */
+    }
 
-    // Sales Chart
-    new Chart(document.getElementById('salesChart'), {
-        type: 'doughnut',
-        data: {
-            labels: salesData.map(item => item.product_name),
-            datasets: [{
-                data: salesData.map(item => item.total_amount),
-                backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'right' },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `UGX ${new Intl.NumberFormat().format(context.raw)}`;
-                        }
-                    }
-                }
-            }
-        }
-    });
-});
-</script>
-{% endblock %}
+    .fa-boxes {
+        color: #2196F3;  /* Blue for stock */
+    }
+
+    .fa-credit-card {
+        color: #FF9800;  /* Orange for credit sales */
+    }
+
+    /* Hover effect for icons */
+    .card:hover .card-icon {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    </style>
 {% endblock %}

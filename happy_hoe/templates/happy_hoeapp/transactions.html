@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
     <div class="tableglass-effect">
-        <strong><h1 class="text-center mb-4 fs-1">All Paid Sales</h1></strong>
+        <strong><h1 class="text-center mb-4 fs-1">All Sales</h1></strong>
        <table class="table table-hover rounded-lg shadow-sm boarder-radius-2xl bg-white/10 backdrop-blur-md ">
             <thead>
                 <tr class="fs-5">
@@ -43,9 +43,14 @@
                     </td>
                     <td>
                         {% if sale.payment_method != 'Cash' %}
-                        <a href="{% url 'create_credit_sale' sale.id %}" class="btn btn-sm btn-info">
-                            <i class="fas fa-credit-card"></i> Convert to Credit
-                        </a>
+                            <a href="{% url 'create_credit_sale' sale.id %}" class="btn btn-sm btn-info">
+                                <i class="fas fa-credit-card"></i> 
+                            </a>
+                            
+                        {% else %}
+                     
+                        <span class="badge bg-warning text-dark">Paid</span>
+                        
                         {% endif %}
                     </td>
                 

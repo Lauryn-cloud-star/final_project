@@ -40,7 +40,7 @@
             <!-- <h1>Welcome to {{ site_name }}</h1> -->
             <!-- <p>This is a Django dynamic app</p> -->
             {% if user.is_authenticated %}
-                <h1 class="text-2xl"><strong>Welcome, {{ user.username }}!</strong></h1>
+                <h1 class="text-2xl"><strong>Welcome  Dear, {{ user.username }}!</strong></h1>
 
             {% else %}
                 <p>Please log in</p>
@@ -63,7 +63,7 @@
                         {% if user.is_manager  %}
                         <th scope="col">Status</th>
                         {% endif %}
-                        <th scope="col">Action</th>
+                        <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>

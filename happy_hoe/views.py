@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 
-from django.db.models import Q
+from django.db.models import Q, Subquery, OuterRef
 # Create your views here.
 from .models import *
 from django.urls import reverse
@@ -31,6 +31,33 @@ def all_branches(request):
     branches = Branch.objects.all()
     return render(request, 'happy_hoeapp/branch.html', {'branches': branches})
 
+
+@login_required
+@user_passes_test(lambda u: u.is_director)
+def branch_list(request):
+    branches = Branch.objects.all().annotate(
+        total_stock=Coalesce(Sum('branch_stock__total_quantity'), 0),
+        staff_count=Count('userprofile'),
+        manager=Subquery(
+            Userprofile.objects.filter(
+                branch=OuterRef('pk'),
+                is_manager=True
+            ).values('id')[:1]
+        )
+    )
+
+    for branch in branches:
+        branch.manager = Userprofile.objects.filter(
+            branch=branch,
+            is_manager=True
+        ).first()
+
+    context = {
+        'branches': branches,
+        'title': 'Branch Overview'
+    }
+    
+    return render(request, 'happy_hoeapp/branch_detail.html', context)
 
 
 @login_required
@@ -335,7 +362,7 @@ def owner(request):
             total=Sum(F('sale__unit_price') * F('sale__quantity'))
         )['total']
 
-    # data for charts
+
     stock_data = list(stock.values('product_name').annotate(
         quantity=Sum('total_quantity')
     ))
@@ -367,13 +394,45 @@ def owner(request):
 
 #view for the managers dashboard
 @login_required
-@user_passes_test(lambda u: u.is_manager)
-def manager(request):
-    
-   
-    
-    return render(request, 'happy_hoeapp/owner_dashboard.html')
 
+def manager(request):
+ # Get manager's branch
+    branch = request.user.branch
+    
+    # Filter queryset by branch
+    stock = Stock.objects.filter(branch=branch)
+    sales = Sale.objects.filter(branch=branch)
+    credit_sales = CreditSale.objects.filter(sale__branch=branch)
+    users = Userprofile.objects.filter(branch=branch)
+
+    # Calculate totals
+    total_sales_amount = sales.aggregate(
+        total=Coalesce(Sum(F('unit_price') * F('quantity')), 0, output_field=FloatField())
+    )['total']
+
+    total_credit_amount = credit_sales.aggregate(
+        total=Coalesce(Sum(F('amount_paid')), 0, output_field=FloatField())
+    )['total']
+
+    context = {
+        'branch_name': branch.branch_name,
+        'total_sales': f"UGX {intcomma(total_sales_amount)}",
+        'total_transactions': sales.count(),
+        'total_stock': stock.aggregate(Sum('total_quantity'))['total_quantity__sum'] or 0,
+        'total_credit_sales': credit_sales.count(),
+        'total_credit_amount': f"UGX {intcomma(total_credit_amount)}",
+        'total_users': users.count(),
+        'stock_data_json': json.dumps(list(stock.values('product_name').annotate(
+            quantity=Sum('total_quantity')
+        ).order_by('-quantity')), cls=DjangoJSONEncoder),
+        'sales_data_json': json.dumps(list(sales.values('product_name').annotate(
+            total=Sum(F('unit_price') * F('quantity'))
+        ).order_by('-total')), cls=DjangoJSONEncoder),
+        'stocks': stock,
+        'title': f'{branch.branch_name} Dashboard'
+    }
+    
+    return render(request, 'happy_hoeapp/manager_dashboard.html', context)
 
 @login_required
 @user_passes_test(lambda u: u.is_director or u.is_manager)
@@ -381,10 +440,10 @@ def signup(request):
     if request.method == 'POST':
         form = UserCreation(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.new_field = request.POST.get('new_field', '')
-            user.save()
-            
+            form.save()
+            username = form.cleaned_data.get('username')
+
+            email = form.cleaned_data.get('email')
             return redirect('/')
     else:
         form = UserCreation()

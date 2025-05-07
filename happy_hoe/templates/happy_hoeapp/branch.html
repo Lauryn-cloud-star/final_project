@@ -5,9 +5,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-white">Branches</h2>
-        {% if user.is_director %}
-        <a href="{% url 'add_branch' %}" class="btn btn-primary">Add New Branch</a>
-        {% endif %}
+        
     </div>
 
     <div class="card shadow-lg">
@@ -36,13 +34,8 @@
                             <td>{{ branch.get_branch_users.count }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{% url 'branch_detail' branch.id %}" class="btn btn-sm btn-info">View</a>
-                                    {% if user.is_director %}
-                                    <a href="{% url 'edit_branch' branch.id %}" class="btn btn-sm btn-warning">Edit</a>
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteBranchModal{{ branch.id }}">
-                                        Delete
-                                    </button>
-                                    {% endif %}
+                                    <a href="/manager_dashboard/" class="btn btn-sm btn-info">View</a>
+                                    
                                 </div>
                             </td>
                         </tr>
@@ -54,27 +47,5 @@
     </div>
 </div>
 
-{% for branch in branches %}
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteBranchModal{{ branch.id }}" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete Branch</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete branch "{{ branch.branch_name }}"?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{% url 'delete_branch' branch.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
+
 {% endblock %}
