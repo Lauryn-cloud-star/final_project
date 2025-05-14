@@ -168,3 +168,27 @@ footer {
   padding-top: 10px;
   color: black;
 }
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  text-decoration: none;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  margin: 1rem;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-5px);
+  color: white;
+}
+
+.back-btn i {
+  margin-right: 8px;
+}

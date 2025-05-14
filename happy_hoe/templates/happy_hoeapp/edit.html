@@ -92,7 +92,7 @@
     
     <div class="row">
         <div class="col-6 bg-light p-4 rounded shadow-sm">
-            <div class="">
+            <div class="card">
                 <h2 class="text-dark">Edit Stock: {{ stock.product_name|capfirst }}</h2>
                 <form method="POST" novalidate>
                     {% csrf_token %}
@@ -138,6 +138,9 @@
                     <li class="list-group-item"><strong>Entry Agent:</strong> {{ stock.entry_agent }}</li>
                 </ul>
             </div>
+            <a href="{% url 'stock_detail' stock.id %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back 
+            </a>
         </div>
       </div>
     
@@ -145,4 +148,5 @@
 
     
 </div>
+<br><br><br><br>
 {% endblock %}

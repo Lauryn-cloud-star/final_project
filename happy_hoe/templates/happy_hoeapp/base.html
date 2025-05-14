@@ -17,7 +17,7 @@
     <!-- style="background-image: url(/static/images/f1.webp); background-position: center; background-size: cover; backdrop-filter: blur(10px);" -->
     <div class="header fixed-top mt-0 mb-10"  id="nav-effect">
         {% if user.is_authenticated %}
-        <img src="{% static 'images/straight.png' %}" alt="Logo" class="logo" /> 
+        <img src="{% static 'images/kgl.png' %}" alt="Logo" class="logo" /> 
     
         <strong><h2 class="text-white text-center ml-3 display-7">Welcome to  Karibu Groceries LTD  {% if user.is_manager or user.is_salesagent %} {{ user.branch.branch_name }} branch  {% endif %}</h2></strong>
         

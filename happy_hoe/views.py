@@ -308,15 +308,18 @@ def issue_item(request,pk):
         'stock': stock_item
     })
 
+@login_required
 def receipt_detail(request, receipt_id):
     receipt = Sale.objects.get(id=receipt_id)
     return render(request, 'happy_hoeapp/final_receipt.html', {'receipt': receipt})
 
+@login_required
 def receipt(request):
     # getting all the registered sales from our data base
     sales=Sale.objects.all().order_by('-id')
     return render(request,"happy_hoeapp/receipt.html", {"sales": sales})
 #  view for the login page
+
 def Login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -344,7 +347,6 @@ def Login(request):
 
 #view for the owner dashboard
 @login_required
-
 def owner(request):
     # getting all the queries from tha database
     sales = Sale.objects.all()
@@ -394,7 +396,6 @@ def owner(request):
 
 #view for the managers dashboard
 @login_required
-
 def manager(request):
  # Get manager's branch
     branch = request.user.branch
@@ -498,6 +499,7 @@ def add_fullstock(request):
 
 
 # a view for deleting a particular stock item
+@login_required
 def delete_stock(request, pk):
     delete_stock = get_object_or_404(Stock,id=pk)
 
@@ -751,7 +753,7 @@ def search(request):
     if search_type == 'stock':
         items = Stock.objects.filter(
             Q(product_name__icontains=query) |
-            Q(category__name__icontains=query) |
+            Q(Category_name__category_name__icontains=query) |  # Changed from category to Category_name
             Q(branch__branch_name__icontains=query)
         ) if query else Stock.objects.all()
         template = 'happy_hoeapp/stock_list.html'

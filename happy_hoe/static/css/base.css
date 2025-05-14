@@ -21,30 +21,31 @@ body::before {
   z-index: -1; /* Ensure it's behind other content */
 }
 .logo {
+    margin: 0 auto;
     width: 200px; 
+    height: auto;
     height: 50px; /* Keep the aspect ratio */
     object-fit: contain; /* Make sure it fits nicely */
 }
-/* Ensure the main content area grows to fill available space */
+/* this is to ensure the main content area grows to fill available space */
 .main-content {
-    min-height: calc(100vh); /* Adjust '50px' based on your footer height */
-    display: flex; /* Optional, if you need flexbox layout */
-    flex-direction: column; /* Optional */
+    margin-left:250px; 
+    display: flex; 
+    flex-direction: column; 
 }
 .sidebar {
-    width: 190px;
-    height: 800px;
-    background-color: #1E2B32;
-    border-radius: 10px;
-    margin-left: 0; 
-    position: fixed;
-    top: 60px; 
-    left: 0;
-    height: calc(100vh - 60px);
-    width: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    padding: 0.5rem;
+  border-radius: 0;  /* Remove border radius */
+  margin-left: 0; 
+  position: fixed;
+  top: 0;           /* Changed from 60px to 0 */
+  left: 0;
+  height: 100vh;    /* Changed to full viewport height */
+  width: 250px;     /* Increased width slightly */
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .col-md-10 {
@@ -80,9 +81,11 @@ body::before {
 }
 
 .header {
-  display: flex;
+
   align-items: center;
-  padding: 1rem;
+  
+  margin-left: 250px;
+  width: calc(100% - 250px);
   background: rgba(0, 0, 0, 0.8);
 }
 
@@ -106,8 +109,15 @@ body::before {
 }
 
 .logo-container {
+  padding: 0.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
   width: 150px;
-  height: 50px
+  height: 50px;
+  background: rgba(228, 189, 161, 0.3);
+  backdrop-filter: blur(5px);
+  border-bottom: 1px solid rgba(122, 109, 100, 0.4);
+  box-shadow: 0 2px 4px rgba(139, 69, 19, 0.2);
 }
 
 .content-container{
@@ -126,15 +136,6 @@ body::before {
 }
 
 
-/* .cardi{ */
-    
-    /* width: 150px; */
-    /* height: 600px; */
-    /* background-color: #1E2B32; */
-    /* border-radius: 10px 10px; */
-    /* width: 200px; */
-/* } */
-
 .header{
   border-radius: 10px 10px 0px 0px;
   /* padding: 2px; */
@@ -151,7 +152,29 @@ h3{
   margin-left: 1rem;
 }
 
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  text-decoration: none;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  margin: 1rem;
+}
 
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-5px);
+  color: white;
+}
+
+.back-btn i {
+  margin-right: 8px;
+}
 
 
 .h3{
