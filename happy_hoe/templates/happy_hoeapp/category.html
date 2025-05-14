@@ -1,0 +1,98 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="tableglass-effectt">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="text-white mb-0">Categories List</h4>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i class="fas fa-plus"></i> Add New Category
+            </button>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="text-white">Category Name</th>
+                        <th class="text-white">Description</th>
+                        <th class="text-white">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td class="text-white">{{ category.category_name }}</td>
+                        <td class="text-white">{{ category.description|default:"-" }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info">
+                                <a href="{% url 'edit_category' category.id %}" class="btn btn-sm btn-info ">
+                                    <i class="fas fa-edit "></i>
+                                </a>
+                                            
+                                
+                            </button>
+                            <button>
+                                <form method="POST" action="{% url 'delete_category' category.id %}">
+                                    {% csrf_token %}
+                                    
+                                
+                                        <a href="{% url 'delete_category' category.id %}" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    
+                                </form>
+                            </button>
+                        
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-white">No categories added yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content tableglass-effect">
+            <form method="POST" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title text-white">Add New Category</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="form-label text-white">Category Name</label>
+                        <input type="text" 
+                               class="form-control" 
+                               name="category_name" 
+                               required 
+                               minlength="2">
+                        <div class="invalid-feedback">
+                            Please enter a category name (minimum 2 characters).
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label text-white">Description</label>
+                        <textarea class="form-control" 
+                                  name="description" 
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

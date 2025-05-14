@@ -1,33 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="Description" content="Enter your description here"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-{% block title %}  <link rel="stylesheet" href="/static/css/style.css">{% endblock %}
-<title>Receipt</title>
-</head>
-<body style="background-image: url(https://images.unsplash.com/photo-1629812456605-4a044aa38fbc?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTc3ODI1OTg&ixlib=rb-1.2.1&q=80); background-position: center; background-size: cover;">
-    <nav>
-        <a href="#">LauraFoods</a>
-        <ul class="list">
-          <li><a href="/home/">Home</a></li>
-          <li><a href="/all_stock/">Stock</a></li>
-          <li><a href="/all_sales/">Sales</a></li>
-          <li><a href="#">Users</a></li>
-        </ul>
-        <button class="search">Search</button>
-        <button class="menu">Menu</button>
-    </nav>
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
 
-    <div class="receipt-container">
+
+ {% blocktitle %} <title>Receipt</title>{% endblock %}
+ {% block extra_css %}
+ <link rel="stylesheet" href="{% static 'css/style.css' %}">
+ 
+{% endblock %}
+
         {% block content %}
             {% for sale in sales %}
-            <div class="flex flex-col bg-white shadow-lg p-6 my-5 rounded-lg" id="receipt">
+            <div class="flex flex-col bg-white shadow-lg p-2 my-5 rounded-lg" id="receipt">
                 <h1 class="text-2xl font-bold text-gray-800 text-center">Receipt</h1>
                 <p class="text-sm text-gray-600 text-center">Thank you for your purchase!</p>
                 <div class="flex flex-col items-center gap-2">
@@ -96,8 +79,4 @@
             
             {% endfor %}
         {% endblock %}
-    </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
-</body>
-</html>
+ 

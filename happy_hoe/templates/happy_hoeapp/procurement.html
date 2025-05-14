@@ -1,0 +1,164 @@
+{% extends 'happy_hoeapp/base.html' %}
+{% load static %}
+{% block title %}Procurement{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card glass-effect">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="card-title text-white mb-0">Add New Stock</h2>
+            <a href="{% url 'categories' %}" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-plus"></i> New Category
+            </a>
+        </div>
+        <div class="card-body">
+            <form method="POST" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label text-white">Category</label>
+                            <select name="category_name" class="form-control" required>
+                                <option value="">Select Category</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.name }}">{{ category.name }}</option>
+                                {% endfor %}
+                                <div class="invalid-feedback">
+                                    Please select a category.
+                                </div>
+                               
+                            </select>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label class="form-label text-white">Product Name</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="product_name" 
+                                   required 
+                                   minlength="2"
+                                   pattern=".{2,}"
+                                   title="Product name must be at least 2 characters long">
+                            <div class="invalid-feedback">
+                                Product name must be at least 2 characters long.
+                            </div>
+                        </div>
+                
+                        <div class="form-group mb-3">
+                            <label class="form-label text-white">Total Quantity (Tonnes)</label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   name="total_quantity" 
+                                   required
+                                   min="0.001"
+                                   step="0.001"
+                                   pattern=".{3,}"
+                                   title="Please enter a valid tonnage (minimum 0.001)">
+                            <div class="invalid-feedback">
+                                Please enter a valid quantity in tonnes (minimum 0.001).
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label text-white">Cost of Stock</label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   name="cost_of_stock" 
+                                   required
+                                   min="10000"
+                                   pattern=".{5,}"
+                                   title="Cost must be at least 10,000">
+                            <div class="invalid-feedback">
+                                Cost must be at least 10,000.
+                            </div>
+                        </div>
+                
+                        <div class="form-group mb-3">
+                            <label class="form-label text-white">Supplier Name</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="supplier_name" 
+                                   required
+                                   minlength="2"
+                                   pattern=".{2,}"
+                                   title="Supplier name must be at least 2 characters long">
+                            <div class="invalid-feedback">
+                                Supplier name must be at least 2 characters long.
+                            </div>
+                        </div>
+                
+                        <div class="form-group mb-3">
+                            <label class="form-label text-white">Branch</label>
+                            <select name="branch_name" class="form-control" required>
+                                <option value="">Select Branch</option>
+                                <option value="Main Branch">Matugga Branch</option>
+                                <option value="Nakawa Branch">Maganjo Branch</option>
+                                
+                        
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a branch.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary ">Add Stock</button>
+                    <a href="{% url 'index' %}" class="btn btn-secondary ">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    select.form-control option {
+        background: #343a40;
+        color: white;
+    }
+
+    .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+</style>
+
+
+
+{% endblock %}

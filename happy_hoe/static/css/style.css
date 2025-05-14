@@ -42,15 +42,63 @@ body {
 }
 
 /* css for another page */
-.receipt-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.receipt-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-#receipt{
-    max-width: 400px;
-    width: 100%;
-    margin-bottom: 20px;
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+  padding-bottom: 10px;
+}
+
+.receipt-body {
+  margin-bottom: 20px;
+}
+
+.receipt-table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.receipt-table th,
+.receipt-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.receipt-footer {
+  text-align: center;
+  border-top: 1px dashed rgba(255, 255, 255, 0.3);
+  padding-top: 10px;
+}
+
+@media print {
+  .receipt-container {
+      width: 80mm; /* Standard receipt width */
+      margin: 0;
+      padding: 10px;
+      background: white;
+      color: black;
+      box-shadow: none;
+  }
+
+  .no-print {
+      display: none;
+  }
+
+  @page {
+      margin: 0;
+      size: 80mm 297mm; /* Standard receipt paper size */
+  }
 }
 body{
     background-color: #2A3942;

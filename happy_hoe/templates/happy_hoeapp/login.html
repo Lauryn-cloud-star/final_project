@@ -1,40 +1,146 @@
-{%  load crispy_forms_tags %}
+
+{% load crispy_forms_tags %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="Description" content="Enter your description here"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="assets/css/style.css">
-<title>Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="Description" content="Enter your description here"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Login - Karibu Groceries</title>
+    <style>
+        body {
+            background: url('{% static "images/s2.webp" %}') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Dark overlay with 60% opacity */
+            z-index: 1;
+        }
+        .container {
+            position: relative;
+            z-index: 2; /* Place container above the overlay */
+        }
+        .login-card {
+            background: rgba(253, 249, 249, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(236, 230, 230, 0.1);
+            overflow: hidden;
+            width: 900px;
+        }
+        
+        .login-form-section {
+            padding: 40px;
+            color: #c8c7c7;
+        }
+        .login-image-section {
+            background: #800020;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .form-title {
+            color: #800020;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .btn-login {
+            background: rgba(128, 0, 32, 0.8);
+            color: white;
+           
+            border-radius: 50px;
+            padding: 8px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            background: rgba(128, 0, 32, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #bab8b8;
+            backdrop-filter: blur(5px);
+        }
+        
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+            color: #b5b5b5;
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .form-label {
+            color: #d6d3d3;
+            font-weight: 500;
+        }
+
+        /* Style for error messages */
+        .invalid-feedback {
+            color: #ffd7d7;
+        }
+    </style>
 </head>
 <body>
-    <div class="container-fluid">
+    <div class="container">
         {% block content %}
-        <br>
-            <div class="body container-fluid container login">
-        
-                <div class="container container-fluid top">
-                    <h1 class=" text-center" style="color:#800020">LOGIN</h1><br>
-
+        <div class="login-card">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    <div class="login-form-section">
+                        <h2 class="text-center form-title">Welcome Back!</h2>
+                        <div class="login-form">
+                            <form method="POST" action="" id="form">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                <button type="submit" class="btn btn-login">Sign In</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="container conatiner-fluid">
-                    <form method="POST" action="" id="form">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <button type="submit" class="btn btn-info btn-danger btn-block">login</button>
-                    </form>
+                <div class="col-md-6">
+                    <div class="login-image-section">
+                        <img src="{% static 'images/wallpip.png' %}" alt="Grocery Store">
+                    </div>
                 </div>
-                
             </div>
+        </div>
         {% endblock %}
     </div>
-    
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
 </body>
 </html>

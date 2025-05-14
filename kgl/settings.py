@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'happy_hoe',
     'crispy_forms',
     'crispy_bootstrap5',
+    'django.contrib.humanize',
 
     
 ]
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'kgl.urls'
